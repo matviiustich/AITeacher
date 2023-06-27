@@ -18,12 +18,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct AITeacherApp: App {
+    @StateObject var authentication = Authentication()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
+            if authentication.isValidated {
                 ContentView()
+                    .environmentObject(authentication)
+            } else {
+                LoginView()
+                    .environmentObject(authentication)
             }
         }
     }

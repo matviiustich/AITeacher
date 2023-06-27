@@ -10,8 +10,12 @@
 		D879756A2A4AD0C200A804B3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D87975692A4AD0C200A804B3 /* FirebaseAuth */; };
 		D879756C2A4AD0C200A804B3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D879756B2A4AD0C200A804B3 /* FirebaseFirestore */; };
 		D88735382A4AF3030094A165 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D88735372A4AF3030094A165 /* GoogleService-Info.plist */; };
-		D887353A2A4AF5020094A165 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735392A4AF5020094A165 /* TutorView.swift */; };
 		D887353C2A4AFADC0094A165 /* prompt.txt in Resources */ = {isa = PBXBuildFile; fileRef = D887353B2A4AFADC0094A165 /* prompt.txt */; };
+		D88735412A4B06600094A165 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735402A4B06600094A165 /* Credentials.swift */; };
+		D88735442A4B07A60094A165 /* UIApplication+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735432A4B07A60094A165 /* UIApplication+Extension.swift */; };
+		D88735462A4B081A0094A165 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735452A4B081A0094A165 /* LoginViewModel.swift */; };
+		D88735482A4B09730094A165 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735472A4B09730094A165 /* LoginView.swift */; };
+		D887354A2A4B0AE60094A165 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735492A4B0AE60094A165 /* Authentication.swift */; };
 		D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */; };
 		D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9152A2F236C001E3AA7 /* ContentView.swift */; };
 		D8B9C9182A2F236D001E3AA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */; };
@@ -23,8 +27,12 @@
 
 /* Begin PBXFileReference section */
 		D88735372A4AF3030094A165 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		D88735392A4AF5020094A165 /* TutorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
 		D887353B2A4AFADC0094A165 /* prompt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prompt.txt; path = AITeacher/prompt.txt; sourceTree = SOURCE_ROOT; };
+		D88735402A4B06600094A165 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		D88735432A4B07A60094A165 /* UIApplication+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Extension.swift"; sourceTree = "<group>"; };
+		D88735452A4B081A0094A165 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		D88735472A4B09730094A165 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		D88735492A4B0AE60094A165 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		D8B9C9102A2F236C001E3AA7 /* AITeacher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AITeacher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITeacherApp.swift; sourceTree = "<group>"; };
 		D8B9C9152A2F236C001E3AA7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -52,9 +60,18 @@
 			isa = PBXGroup;
 			children = (
 				D8B9C9152A2F236C001E3AA7 /* ContentView.swift */,
-				D88735392A4AF5020094A165 /* TutorView.swift */,
+				D88735452A4B081A0094A165 /* LoginViewModel.swift */,
+				D88735472A4B09730094A165 /* LoginView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		D88735422A4B078A0094A165 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D88735432A4B07A60094A165 /* UIApplication+Extension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		D8B9C9072A2F236C001E3AA7 = {
@@ -76,13 +93,14 @@
 		D8B9C9122A2F236C001E3AA7 /* AITeacher */ = {
 			isa = PBXGroup;
 			children = (
+				D88735422A4B078A0094A165 /* Extensions */,
 				D87975492A49ADDF00A804B3 /* Views */,
 				D8B9C9292A2F80AE001E3AA7 /* Models */,
 				D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */,
-				D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */,
 				D8B9C91C2A2F236D001E3AA7 /* Persistence.swift */,
 				D88735372A4AF3030094A165 /* GoogleService-Info.plist */,
 				D8B9C91E2A2F236D001E3AA7 /* AITeacher.xcdatamodeld */,
+				D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */,
 				D8B9C9192A2F236D001E3AA7 /* Preview Content */,
 			);
 			path = AITeacher;
@@ -100,6 +118,8 @@
 			isa = PBXGroup;
 			children = (
 				D8B9C92A2A2F80C9001E3AA7 /* Tutor.swift */,
+				D88735492A4B0AE60094A165 /* Authentication.swift */,
+				D88735402A4B06600094A165 /* Credentials.swift */,
 				D887353B2A4AFADC0094A165 /* prompt.txt */,
 			);
 			path = Models;
@@ -115,6 +135,7 @@
 				D8B9C90C2A2F236C001E3AA7 /* Sources */,
 				D8B9C90D2A2F236C001E3AA7 /* Frameworks */,
 				D8B9C90E2A2F236C001E3AA7 /* Resources */,
+				D887353F2A4B024E0094A165 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -179,17 +200,41 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		D887353F2A4B024E0094A165 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f \"${PROJECT_DIR}/.env\" ]; then\n    export $(cat \"${PROJECT_DIR}/.env\" | xargs)\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		D8B9C90C2A2F236C001E3AA7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				D8B9C9202A2F236D001E3AA7 /* AITeacher.xcdatamodeld in Sources */,
-				D887353A2A4AF5020094A165 /* TutorView.swift in Sources */,
+				D88735442A4B07A60094A165 /* UIApplication+Extension.swift in Sources */,
 				D8B9C91D2A2F236D001E3AA7 /* Persistence.swift in Sources */,
+				D88735412A4B06600094A165 /* Credentials.swift in Sources */,
 				D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */,
 				D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */,
 				D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */,
+				D88735482A4B09730094A165 /* LoginView.swift in Sources */,
+				D88735462A4B081A0094A165 /* LoginViewModel.swift in Sources */,
+				D887354A2A4B0AE60094A165 /* Authentication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -51,8 +51,8 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "openai_api_key"
-            value = "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"
+            key = "OPENAI_API_KEY"
+            value = "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"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
