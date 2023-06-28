@@ -8,21 +8,32 @@
 import SwiftUI
 
 struct LessonsTabView: View {
+    @State private var selectedLesson: Lesson? = nil
     
     let lessons: [Lesson] = [Lesson(title: "Physics", conversation: [["user": "hello"]]), Lesson(title: "Maths", conversation: [["user": "Hello"]])]
     
     var body: some View {
         NavigationView {
             List(lessons) { lesson in
-                NavigationLink(destination: EmptyView()) {
+                NavigationLink(
+                    destination: LessonView(),
+                    tag: lesson,
+                    selection: $selectedLesson
+                ) {
                     Text(lesson.title)
                         .font(.headline)
                 }
+                .onTapGesture {
+                    selectedLesson = lesson
+                }
             }
-            .toolbar {
-                
+            .toolbar(selectedLesson != nil ? .hidden : .visible, for: .tabBar)
+            .navigationBarTitle("Lessons")
+            .onAppear {
+                selectedLesson = nil
             }
         }
+        
     }
 }
 

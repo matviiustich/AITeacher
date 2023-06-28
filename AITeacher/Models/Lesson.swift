@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Lesson: Identifiable {
+struct Lesson: Identifiable, Hashable {
     let id = UUID()
     
     let title: String

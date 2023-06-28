@@ -18,6 +18,7 @@
 		D861DD012A4C1E7C00AAD5D6 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD002A4C1E7C00AAD5D6 /* LoginView.swift */; };
 		D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD022A4C1E9200AAD5D6 /* SignupView.swift */; };
 		D861DD072A4C519B00AAD5D6 /* LessonsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */; };
+		D861DD0A2A4C5E7A00AAD5D6 /* LessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */; };
 		D879756A2A4AD0C200A804B3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D87975692A4AD0C200A804B3 /* FirebaseAuth */; };
 		D879756C2A4AD0C200A804B3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D879756B2A4AD0C200A804B3 /* FirebaseFirestore */; };
 		D88735382A4AF3030094A165 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D88735372A4AF3030094A165 /* GoogleService-Info.plist */; };
@@ -35,7 +36,7 @@
 
 /* Begin PBXFileReference section */
 		D85301FB2A4B1F6100324822 /* Lesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lesson.swift; sourceTree = "<group>"; };
-		D861DCF32A4C196200AAD5D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D861DCF32A4C196200AAD5D6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D861DCF42A4C1C8B00AAD5D6 /* AuthenticatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedView.swift; sourceTree = "<group>"; };
 		D861DCF62A4C1CF500AAD5D6 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		D861DCF92A4C1D5B00AAD5D6 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
@@ -43,6 +44,7 @@
 		D861DD002A4C1E7C00AAD5D6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		D861DD022A4C1E9200AAD5D6 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonsTabView.swift; sourceTree = "<group>"; };
+		D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonView.swift; sourceTree = "<group>"; };
 		D88735372A4AF3030094A165 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D887353B2A4AFADC0094A165 /* prompt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prompt.txt; path = AITeacher/prompt.txt; sourceTree = SOURCE_ROOT; };
 		D88735402A4B06600094A165 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			children = (
 				D8B9C9152A2F236C001E3AA7 /* ContentView.swift */,
 				D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */,
+				D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -148,14 +151,14 @@
 		D8B9C9122A2F236C001E3AA7 /* AITeacher */ = {
 			isa = PBXGroup;
 			children = (
-				D861DCF32A4C196200AAD5D6 /* Info.plist */,
 				D88735422A4B078A0094A165 /* Extensions */,
 				D87975492A49ADDF00A804B3 /* Views */,
 				D8B9C9292A2F80AE001E3AA7 /* Models */,
 				D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */,
 				D861DD042A4C200000AAD5D6 /* CoreData */,
-				D88735372A4AF3030094A165 /* GoogleService-Info.plist */,
 				D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */,
+				D861DCF32A4C196200AAD5D6 /* Info.plist */,
+				D88735372A4AF3030094A165 /* GoogleService-Info.plist */,
 				D8B9C9192A2F236D001E3AA7 /* Preview Content */,
 			);
 			path = AITeacher;
@@ -294,6 +297,7 @@
 				D861DCF52A4C1C8B00AAD5D6 /* AuthenticatedView.swift in Sources */,
 				D861DD012A4C1E7C00AAD5D6 /* LoginView.swift in Sources */,
 				D861DD072A4C519B00AAD5D6 /* LessonsTabView.swift in Sources */,
+				D861DD0A2A4C5E7A00AAD5D6 /* LessonView.swift in Sources */,
 				D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */,
 				D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */,
 				D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */,

@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
         TabView {
@@ -16,8 +17,12 @@ struct ContentView: View {
                 .tabItem {
                     Label("Lessons", systemImage: "book")
                 }
+            UserProfileView()
+                .environmentObject(viewModel)
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
         }
-        
     }
 }
 

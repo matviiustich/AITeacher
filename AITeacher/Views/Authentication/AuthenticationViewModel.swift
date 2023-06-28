@@ -174,6 +174,5 @@ extension AuthenticationViewModel {
             errorMessage = error.localizedDescription
             return false
         }
-        return false  // replace this with the implementation
     }
 }

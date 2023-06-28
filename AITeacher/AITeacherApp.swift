@@ -33,7 +33,6 @@ struct AITeacherApp: App {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } content: {
                     ContentView()
-                    Spacer()
                 }
             }
         }
