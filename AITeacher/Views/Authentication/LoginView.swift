@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 import FirebaseAnalyticsSwift
+import _AuthenticationServices_SwiftUI
 
 private enum FocusableField: Hashable {
     case email
@@ -104,19 +105,29 @@ struct LoginView: View {
             }
             
             Button(action: signInWithGoogle) {
-                Text("Sign in with Google")
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .background(alignment: .leading) {
-                        Image("g-logo")
-                            .resizable()
-                            .frame(width: 30, height: 30, alignment: .center)
-                    }
+                HStack {
+                    Image("g-logo")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                    Text("Sign in with Google")
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                }
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity)
             }
+            .frame(minHeight: 55)
             .buttonStyle(.bordered)
-
             
+            
+            // Implement sign in with Apple (Apple developer account required)
+            SignInWithAppleButton { request in
+                
+            } onCompletion: { result in
+                
+            }
+            .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
+            .frame(maxWidth: .infinity, maxHeight: 55)
+
             HStack {
                 Text("Don't have an account yet?")
                 Button(action: { viewModel.switchFlow() }) {

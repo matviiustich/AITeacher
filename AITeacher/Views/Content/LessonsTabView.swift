@@ -9,8 +9,9 @@ import SwiftUI
 
 struct LessonsTabView: View {
     @State private var selectedLesson: Lesson? = nil
+    @State private var shouldAnimate = false
     
-    let lessons: [Lesson] = [Lesson(title: "Physics", conversation: [["user": "hello"]]), Lesson(title: "Maths", conversation: [["user": "Hello"]])]
+    let lessons = [Lesson(title: "Physics", conversation: [], memory: [])]
     
     var body: some View {
         NavigationView {
@@ -24,13 +25,17 @@ struct LessonsTabView: View {
                         .font(.headline)
                 }
                 .onTapGesture {
-                    selectedLesson = lesson
+                    withAnimation {
+                        selectedLesson = lesson
+                    }
                 }
             }
             .toolbar(selectedLesson != nil ? .hidden : .visible, for: .tabBar)
             .navigationBarTitle("Lessons")
             .onAppear {
-                selectedLesson = nil
+                withAnimation {
+                    selectedLesson = nil
+                }
             }
         }
         
