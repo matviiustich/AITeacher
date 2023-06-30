@@ -17,7 +17,7 @@ func loadPrompt() -> String {
 }
 
 func askTutor(modelInput: [[String: String]]) async -> [String: String] {
-    let apiKey = ""
+    let apiKey = "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"
     let urlString = "https://api.openai.com/v1/chat/completions"
     let url = URL(string: urlString)!
     

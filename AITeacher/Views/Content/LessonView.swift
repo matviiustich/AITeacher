@@ -12,7 +12,7 @@ let grey = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345
 let purpleColor = #colorLiteral(red: 0.6149501204, green: 0.6350134015, blue: 0.9986490607, alpha: 1)
 
 struct LessonView: View {
-    @State private var lesson = Lesson(title: "Physics", conversation: [], memory: [["role": "system", "content" : loadPrompt()]])
+    @State private var lesson = Lesson(title: "Physics", lastUpdated: .now, conversation: [], memory: [["role": "system", "content" : loadPrompt()]])
     @State private var messageText: String = ""
     @State private var canSendMessage: Bool = true
     
@@ -40,16 +40,28 @@ struct LessonView: View {
                     .font(.system(size: 16))
                     .cornerRadius(10)
                     .padding(.leading)
-                
+
                 Button(action: sendMessage) {
-                    Image(systemName: "arrow.up")
-                        .resizable()
-                        .frame(width: 17, height: 17)
-                        .padding(9)
-                        .background(canSendMessage ? Color.purple : Color(purpleColor))
-                        .foregroundColor(.white)
-                        .clipShape(Circle())
-                    
+                    ZStack {
+                        if canSendMessage {
+                            Image(systemName: "arrow.up")
+                                .resizable()
+                                .frame(width: 17, height: 17)
+                                .padding(9)
+                                .background(Color(purpleColor))
+                                .foregroundColor(.white)
+                                .clipShape(Circle())
+                        } else {
+                            Circle()
+                                .stroke(Color(purpleColor), lineWidth: 3)
+                                .frame(width: 35, height: 35)
+                                .overlay(
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: Color(purpleColor)))
+                                        .scaleEffect(0.8)
+                                )
+                        }
+                    }
                 }
                 .disabled(!canSendMessage)
                 .padding(.trailing)
@@ -61,31 +73,31 @@ struct LessonView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button(action: {
-                        // Handle feedback option
+                        lessonFunction(command: "/feedback")
                     }) {
                         Label("Feedback", systemImage: "message")
                     }
                     
                     Button(action: {
-                        // Handle test option
+                        lessonFunction(command: "/test")
                     }) {
                         Label("Test", systemImage: "pencil")
                     }
                     
                     Button(action: {
-                        // Handle config option
+                        lessonFunction(command: "/config")
                     }) {
                         Label("Config", systemImage: "gear")
                     }
                     
                     Button(action: {
-                        // Handle plan option
+                        lessonFunction(command: "/plan")
                     }) {
                         Label("Plan", systemImage: "calendar")
                     }
                     
                     Button(action: {
-                        // Handle continue option
+                        lessonFunction(command: "/continue")
                     }) {
                         Label("Continue", systemImage: "arrow.right.circle")
                     }
@@ -123,6 +135,26 @@ struct LessonView: View {
             }
         }
         
+    }
+    
+    // Special commands for the tutor (e.g. /feedback, /test, /plan)
+    func lessonFunction(command: String) {
+        Task {
+            withAnimation {
+                canSendMessage = false
+            }
+            lesson.memory.append(["role" : "user", "content" : command])
+            let result = await askTutor(modelInput: lesson.memory)
+            let resultContent = result["content"] ?? "Error occured while loading the answer"
+            lesson.memory.append(["role" : "assistant", "content" : resultContent])
+            let tutorMessage = Message(text: resultContent, isSentByUser: false)
+            withAnimation {
+                lesson.conversation.append(tutorMessage)
+            }
+            withAnimation {
+                canSendMessage = true
+            }
+        }
     }
     
 }

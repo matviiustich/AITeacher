@@ -7,16 +7,17 @@
 
 import Foundation
 
-struct Message: Identifiable, Hashable {
+struct Message: Identifiable, Hashable, Codable {
     let id = UUID()
     let text: String
     let isSentByUser: Bool
 }
 
-struct Lesson: Identifiable, Hashable {
+struct Lesson: Identifiable, Hashable, Codable {
     let id = UUID()
     
     let title: String
+    let lastUpdated: Date
     var conversation: [Message]
     var memory: [[String: String]]
     
