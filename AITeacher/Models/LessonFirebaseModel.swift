@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Firebase
 import FirebaseFirestore
 
 //class LessonFirebaseModel {
@@ -98,29 +99,42 @@ class LessonFirebaseModel: ObservableObject {
     
     @Published var lessons: [Lesson] = []
     
-    func storeLesson(_ lesson: Lesson) {
+    func createLesson(title: String) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
         do {
+            let lessonID = UUID().uuidString
+            print(lessonID)
+            let lesson = Lesson(id: lessonID, title: title, lastUpdated: .now, conversation: [], memory: [["role" : "system", "content" : loadPrompt()]])
             let lessonData = try JSONEncoder().encode(lesson)
             let lessonDict = try JSONSerialization.jsonObject(with: lessonData, options: []) as? [String: Any]
             
             guard let dict = lessonDict else {
                 return
             }
-            
-            db.collection("lessons").addDocument(data: dict) { error in
+            let usersCollection = db.collection("users").document(currentUserID)
+            usersCollection.collection("lessons").document(lessonID).setData(dict) { error in
                 if let error = error {
                     print("Error storing lesson: \(error.localizedDescription)")
                 } else {
                     print("Lesson stored successfully.")
                 }
             }
+            
         } catch {
             print("Error encoding lesson: \(error.localizedDescription)")
         }
     }
     
     func retrieveLessons(completion: @escaping ([Lesson]) -> Void) {
-        db.collection("lessons").getDocuments { snapshot, error in
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
+        let usersCollection = db.collection("users").document(currentUserID)
+        usersCollection.collection("lessons").getDocuments { snapshot, error in
             if let error = error {
                 print("Error retrieving lessons: \(error.localizedDescription)")
                 completion([])
@@ -144,6 +158,11 @@ class LessonFirebaseModel: ObservableObject {
     }
     
     func updateLesson(_ lesson: Lesson) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
+        
         do {
             let lessonData = try! JSONEncoder().encode(lesson)
             let lessonDict = try! JSONSerialization.jsonObject(with: lessonData, options: []) as? [String: Any]
@@ -152,8 +171,9 @@ class LessonFirebaseModel: ObservableObject {
                 return
             }
             
-            let lessonId = lesson.id.uuidString
-            db.collection("lessons").document(lessonId).setData(dict) { error in
+            let lessonId = lesson.id
+            let usersCollection = db.collection("users").document(currentUserID)
+            usersCollection.collection("lessons").document(lessonId).setData(dict) { error in
                 if let error = error {
                     print("Error updating lesson: \(error.localizedDescription)")
                 } else {
@@ -164,8 +184,14 @@ class LessonFirebaseModel: ObservableObject {
     }
     
     func deleteLesson(_ lesson: Lesson) {
-        let lessonId = lesson.id.uuidString
-        db.collection("lessons").document(lessonId).delete { error in
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
+        
+        let lessonId = lesson.id
+        let usersCollection = db.collection("users").document(currentUserID)
+        usersCollection.collection("lessons").document(lessonId).delete { error in
             if let error = error {
                 print("Error deleting lesson: \(error.localizedDescription)")
             } else {
@@ -175,9 +201,15 @@ class LessonFirebaseModel: ObservableObject {
     }
     
     func startListening() {
-        stopListening()  // Stop any existing listener
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
         
-        listener = db.collection("lessons").addSnapshotListener { snapshot, error in
+        stopListening()
+        
+        let usersCollection = db.collection("users").document(currentUserID)
+        listener = usersCollection.collection("lessons").addSnapshotListener { snapshot, error in
             if let error = error {
                 print("Error listening for lessons: \(error.localizedDescription)")
                 return

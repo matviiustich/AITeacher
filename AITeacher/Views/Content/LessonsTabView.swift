@@ -19,7 +19,7 @@ struct LessonsTabView: View {
         NavigationView {
             List(lessonsFirebase.lessons) { lesson in
                 NavigationLink(
-                    destination: LessonView(),
+                    destination: LessonView(lesson: lesson),
                     tag: lesson,
                     selection: $selectedLesson
                 ) {
@@ -58,7 +58,7 @@ struct LessonsTabView: View {
             TextField("Title", text: $lessonTitle)
             Button("Cancel", role: .cancel, action: {})
             Button {
-                lessonsFirebase.storeLesson(Lesson(title: lessonTitle, lastUpdated: .now, conversation: [], memory: [[:]]))
+                lessonsFirebase.createLesson(title: lessonTitle)
                 showLessonTitleAlert = false
             } label: {
                 Text("Save")

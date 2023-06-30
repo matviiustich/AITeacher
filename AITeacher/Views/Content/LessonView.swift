@@ -12,7 +12,8 @@ let grey = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345
 let purpleColor = #colorLiteral(red: 0.6149501204, green: 0.6350134015, blue: 0.9986490607, alpha: 1)
 
 struct LessonView: View {
-    @State private var lesson = Lesson(title: "Physics", lastUpdated: .now, conversation: [], memory: [["role": "system", "content" : loadPrompt()]])
+    @ObservedObject private var lessonFirebaseModel = LessonFirebaseModel()
+    @State var lesson: Lesson
     @State private var messageText: String = ""
     @State private var canSendMessage: Bool = true
     
@@ -40,7 +41,7 @@ struct LessonView: View {
                     .font(.system(size: 16))
                     .cornerRadius(10)
                     .padding(.leading)
-
+                
                 Button(action: sendMessage) {
                     ZStack {
                         if canSendMessage {
@@ -67,6 +68,12 @@ struct LessonView: View {
                 .padding(.trailing)
             }
             .padding(.bottom)
+        }
+        .onAppear {
+            lessonFirebaseModel.startListening()
+        }
+        .onDisappear {
+            lessonFirebaseModel.stopListening()
         }
         .navigationBarTitle(lesson.title, displayMode: .inline)
         .toolbar {
@@ -106,14 +113,14 @@ struct LessonView: View {
                 }
             }
         }
-
+        
         .dismissKeyboard()
     }
     
     func sendMessage() {
         guard !messageText.isEmpty else { return }
         
-        let userMessage = Message(text: messageText, isSentByUser: true)
+        let userMessage = Message(id: UUID().uuidString, text: messageText, isSentByUser: true)
         withAnimation {
             lesson.conversation.append(userMessage)
         }
@@ -123,16 +130,16 @@ struct LessonView: View {
             withAnimation {
                 canSendMessage = false
             }
+            print(lesson.memory)
             let result = await askTutor(modelInput: lesson.memory)
             let resultContent = result["content"] ?? "Error occured while loading the answer"
             lesson.memory.append(["role" : "assistant", "content" : resultContent])
-            let tutorMessage = Message(text: resultContent, isSentByUser: false)
+            let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
             withAnimation {
                 lesson.conversation.append(tutorMessage)
-            }
-            withAnimation {
                 canSendMessage = true
             }
+            lessonFirebaseModel.updateLesson(lesson)
         }
         
     }
@@ -147,7 +154,7 @@ struct LessonView: View {
             let result = await askTutor(modelInput: lesson.memory)
             let resultContent = result["content"] ?? "Error occured while loading the answer"
             lesson.memory.append(["role" : "assistant", "content" : resultContent])
-            let tutorMessage = Message(text: resultContent, isSentByUser: false)
+            let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
             withAnimation {
                 lesson.conversation.append(tutorMessage)
             }
@@ -200,6 +207,52 @@ struct MessageView: View {
 
 struct LessonView_Previews: PreviewProvider {
     static var previews: some View {
-        LessonView()
+        LessonView(lesson: Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, conversation: [], memory: [["role": "system", "content" : loadPrompt()]]))
     }
 }
+
+
+//struct LessonView: View {
+//    @ObservedObject private var lessonFirebaseModel = LessonFirebaseModel()
+//    @State var lesson: Lesson
+//
+//    // Additional state variables for the message input
+//    @State private var newMessageText: String = ""
+//
+//    var body: some View {
+//        VStack {
+//            // Display the lesson details
+//            Text(lesson.title)
+//                .font(.title)
+//
+//            // Display the existing messages
+//            ForEach(lesson.conversation) { message in
+//                Text(message.text)
+//            }
+//
+//            // Add a new message
+//            TextField("New Message", text: $newMessageText)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+//
+//            Button("Add Message") {
+//                let newMessage = Message(id: UUID().uuidString, text: newMessageText, isSentByUser: true)
+//                lesson.conversation.append(newMessage)
+//                var updatedLesson = lesson
+//                updatedLesson.conversation.append(newMessage)
+//
+//                lessonFirebaseModel.updateLesson(lesson)
+//
+//                // Clear the input field
+//                newMessageText = ""
+//            }
+//        }
+//        .onAppear {
+//            // Start listening for changes to the lesson
+//            lessonFirebaseModel.startListening()
+//        }
+//        .onDisappear {
+//            // Stop listening when the view disappears
+//            lessonFirebaseModel.stopListening()
+//        }
+//    }
+//}

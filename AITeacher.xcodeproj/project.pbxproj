@@ -28,6 +28,7 @@
 		D88735412A4B06600094A165 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735402A4B06600094A165 /* Credentials.swift */; };
 		D88735442A4B07A60094A165 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735432A4B07A60094A165 /* Extension.swift */; };
 		D8AC52E62A4EBFCD00338090 /* LessonFirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */; };
+		D8AC52E82A4ECF4D00338090 /* OPENAI_API_KEY.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */; };
 		D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */; };
 		D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9152A2F236C001E3AA7 /* ContentView.swift */; };
 		D8B9C9182A2F236D001E3AA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */; };
@@ -53,6 +54,7 @@
 		D88735402A4B06600094A165 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		D88735432A4B07A60094A165 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonFirebaseModel.swift; sourceTree = "<group>"; };
+		D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OPENAI_API_KEY.txt; path = AITeacher/OPENAI_API_KEY.txt; sourceTree = SOURCE_ROOT; };
 		D8B9C9102A2F236C001E3AA7 /* AITeacher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AITeacher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITeacherApp.swift; sourceTree = "<group>"; };
 		D8B9C9152A2F236C001E3AA7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -184,8 +186,9 @@
 				D8B9C92A2A2F80C9001E3AA7 /* Tutor.swift */,
 				D88735402A4B06600094A165 /* Credentials.swift */,
 				D85301FB2A4B1F6100324822 /* Lesson.swift */,
-				D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */,
 				D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */,
+				D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */,
+				D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				D88735382A4AF3030094A165 /* GoogleService-Info.plist in Resources */,
 				D861DD0E2A4DA2F900AAD5D6 /* prompt.txt in Resources */,
 				D8B9C9182A2F236D001E3AA7 /* Assets.xcassets in Resources */,
+				D8AC52E82A4ECF4D00338090 /* OPENAI_API_KEY.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

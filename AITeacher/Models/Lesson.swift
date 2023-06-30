@@ -8,13 +8,13 @@
 import Foundation
 
 struct Message: Identifiable, Hashable, Codable {
-    let id = UUID()
+    let id: String
     let text: String
     let isSentByUser: Bool
 }
 
 struct Lesson: Identifiable, Hashable, Codable {
-    let id = UUID()
+    let id: String
     
     let title: String
     let lastUpdated: Date

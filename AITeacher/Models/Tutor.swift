@@ -17,7 +17,14 @@ func loadPrompt() -> String {
 }
 
 func askTutor(modelInput: [[String: String]]) async -> [String: String] {
-    let apiKey = "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"
+    let path = Bundle.main.path(forResource: "OPENAI_API_KEY", ofType: "txt")
+    var apiKey: String = ""
+    do {
+        apiKey = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
+    } catch {
+        fatalError("Error occured while extracting API key")
+    }
+    
     let urlString = "https://api.openai.com/v1/chat/completions"
     let url = URL(string: urlString)!
     
