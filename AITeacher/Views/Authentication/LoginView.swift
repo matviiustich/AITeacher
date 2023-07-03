@@ -126,7 +126,8 @@ struct LoginView: View {
                 
             }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
-            .frame(maxWidth: .infinity, maxHeight: 55)
+            .frame(height: 55)
+            .frame(maxWidth: .infinity)
 
             HStack {
                 Text("Don't have an account yet?")

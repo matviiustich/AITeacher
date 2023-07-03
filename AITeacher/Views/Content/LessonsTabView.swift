@@ -17,20 +17,23 @@ struct LessonsTabView: View {
     
     var body: some View {
         NavigationView {
-            List(lessonsFirebase.lessons) { lesson in
-                NavigationLink(
-                    destination: LessonView(lesson: lesson),
-                    tag: lesson,
-                    selection: $selectedLesson
-                ) {
-                    Text(lesson.title)
-                        .font(.headline)
-                }
-                .onTapGesture {
-                    withAnimation {
-                        selectedLesson = lesson
+            List {
+                ForEach(lessonsFirebase.lessons, id: \.self) { lesson in
+                    NavigationLink(
+                        destination: LessonView(lesson: lesson),
+                        tag: lesson,
+                        selection: $selectedLesson
+                    ) {
+                        Text(lesson.title)
+                            .font(.headline)
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            selectedLesson = lesson
+                        }
                     }
                 }
+                .onDelete(perform: delete)
             }
             .toolbar(selectedLesson != nil ? .hidden : .visible, for: .tabBar)
             .toolbar {
@@ -69,6 +72,16 @@ struct LessonsTabView: View {
         }
 
     }
+    
+    func delete(at offsets: IndexSet) {
+        if let deletedIndex = offsets.first {
+            let deletedLesson = lessonsFirebase.lessons[deletedIndex]
+            print("Deleted Lesson ID: \(deletedLesson.id)")
+            // Perform deletion logic here
+            lessonsFirebase.deleteLesson(deletedLesson)
+        }
+    }
+
     
 }
 
