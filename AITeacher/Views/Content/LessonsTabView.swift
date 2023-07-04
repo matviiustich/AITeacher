@@ -10,7 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct LessonsTabView: View {
-    @StateObject private var lessonsFirebase = LessonFirebaseModel()
+    @ObservedObject var lessonsFirebase = LessonFirebaseModel()
     @State private var selectedLesson: Lesson? = nil
     @State private var showLessonTitleAlert: Bool = false
     @State private var lessonTitle: String = ""
@@ -20,7 +20,7 @@ struct LessonsTabView: View {
             List {
                 ForEach(lessonsFirebase.lessons, id: \.self) { lesson in
                     NavigationLink(
-                        destination: LessonView(lesson: lesson),
+                        destination: ChaptersView(lesson: lesson),
                         tag: lesson,
                         selection: $selectedLesson
                     ) {
@@ -35,7 +35,7 @@ struct LessonsTabView: View {
                 }
                 .onDelete(perform: delete)
             }
-            .toolbar(selectedLesson != nil ? .hidden : .visible, for: .tabBar)
+//            .toolbar(selectedLesson != nil ? .hidden : .visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -48,6 +48,9 @@ struct LessonsTabView: View {
             }
             .navigationBarTitle("Lessons")
             .onAppear {
+                Task {
+                    lessonsFirebase.lessons = await lessonsFirebase.retrieveLessons()
+                }
                 lessonsFirebase.startListening()
                 withAnimation {
                     selectedLesson = nil
@@ -61,7 +64,10 @@ struct LessonsTabView: View {
             TextField("Title", text: $lessonTitle)
             Button("Cancel", role: .cancel, action: {})
             Button {
-                lessonsFirebase.createLesson(title: lessonTitle)
+                withAnimation {
+                    lessonsFirebase.createLesson(title: lessonTitle)
+                }
+                lessonTitle = ""
                 showLessonTitleAlert = false
             } label: {
                 Text("Save")

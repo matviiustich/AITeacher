@@ -11,9 +11,10 @@ let lightGreyColor = #colorLiteral(red: 0.9376311898, green: 0.9411993623, blue:
 let grey = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345496, alpha: 1)
 let purpleColor = #colorLiteral(red: 0.6149501204, green: 0.6350134015, blue: 0.9986490607, alpha: 1)
 
-struct LessonView: View {
-    @ObservedObject private var lessonFirebaseModel = LessonFirebaseModel()
+struct ChapterConversationView: View {
+    @ObservedObject var lessonsFirebase = LessonFirebaseModel()
     @State var lesson: Lesson
+    let chapterIndex: Int
     @State private var messageText: String = ""
     @State private var canSendMessage: Bool = true
     
@@ -22,13 +23,13 @@ struct LessonView: View {
             ScrollViewReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 10) {
-                        ForEach(lesson.conversation) { message in
+                        ForEach(lesson.chapters[chapterIndex].conversation) { message in
                             MessageView(message: message)
                         }
                     }
                 }
-                .onChange(of: lesson.conversation.count, perform: { _ in
-                    proxy.scrollToLastMessage(messages: lesson.conversation)
+                .onChange(of: lesson.chapters[chapterIndex].conversation.count, perform: { _ in
+                    proxy.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
                 })
                 .padding()
             }
@@ -70,12 +71,13 @@ struct LessonView: View {
             .padding(.bottom)
         }
         .onAppear {
-            lessonFirebaseModel.startListening()
+            print(lesson.chapters[chapterIndex])
+            lessonsFirebase.startListening()
         }
         .onDisappear {
-            lessonFirebaseModel.stopListening()
+            lessonsFirebase.stopListening()
         }
-        .navigationBarTitle(lesson.title, displayMode: .inline)
+        .navigationBarTitle(lesson.chapters[chapterIndex].title, displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
@@ -122,24 +124,27 @@ struct LessonView: View {
         
         let userMessage = Message(id: UUID().uuidString, text: messageText, isSentByUser: true)
         withAnimation {
-            lesson.conversation.append(userMessage)
+            lesson.chapters[chapterIndex].conversation.append(userMessage)
+//            lessonFirebaseModel.updateLesson(lesson)
         }
-        lesson.memory.append(["role" : "user", "content" : messageText])
+        lesson.chapters[chapterIndex].memory.append(["role" : "user", "content" : messageText])
         messageText = ""
         Task {
             withAnimation {
                 canSendMessage = false
             }
-            print(lesson.memory)
-            let result = await askTutor(modelInput: lesson.memory)
+            print(lesson.chapters[chapterIndex].memory)
+            let lessonCopy = lesson
+            let chapterIndexCopy = chapterIndex
+            let result = await askTutor(modelInput: lessonCopy.chapters[chapterIndexCopy].memory)
             let resultContent = result["content"] ?? "Error occured while loading the answer"
-            lesson.memory.append(["role" : "assistant", "content" : resultContent])
+            lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : resultContent])
             let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
             withAnimation {
-                lesson.conversation.append(tutorMessage)
+                lesson.chapters[chapterIndex].conversation.append(tutorMessage)
                 canSendMessage = true
             }
-            lessonFirebaseModel.updateLesson(lesson)
+            lessonsFirebase.updateLesson(lesson)
         }
         
     }
@@ -150,13 +155,15 @@ struct LessonView: View {
             withAnimation {
                 canSendMessage = false
             }
-            lesson.memory.append(["role" : "user", "content" : command])
-            let result = await askTutor(modelInput: lesson.memory)
+            lesson.chapters[chapterIndex].memory.append(["role" : "user", "content" : command])
+            let lessonCopy = lesson
+            let chapterIndexCopy = chapterIndex
+            let result = await askTutor(modelInput: lessonCopy.chapters[chapterIndexCopy].memory)
             let resultContent = result["content"] ?? "Error occured while loading the answer"
-            lesson.memory.append(["role" : "assistant", "content" : resultContent])
+            lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : resultContent])
             let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
             withAnimation {
-                lesson.conversation.append(tutorMessage)
+                lesson.chapters[chapterIndex].conversation.append(tutorMessage)
             }
             withAnimation {
                 canSendMessage = true
@@ -207,52 +214,7 @@ struct MessageView: View {
 
 struct LessonView_Previews: PreviewProvider {
     static var previews: some View {
-        LessonView(lesson: Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, conversation: [], memory: [["role": "system", "content" : loadPrompt()]]))
+        let lesson = Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, chapters: [Chapter(id: UUID().uuidString, title: "Motion", conversation: [], memory: [[:]])])
+        ChapterConversationView(lesson: lesson, chapterIndex: 0)
     }
 }
-
-
-//struct LessonView: View {
-//    @ObservedObject private var lessonFirebaseModel = LessonFirebaseModel()
-//    @State var lesson: Lesson
-//
-//    // Additional state variables for the message input
-//    @State private var newMessageText: String = ""
-//
-//    var body: some View {
-//        VStack {
-//            // Display the lesson details
-//            Text(lesson.title)
-//                .font(.title)
-//
-//            // Display the existing messages
-//            ForEach(lesson.conversation) { message in
-//                Text(message.text)
-//            }
-//
-//            // Add a new message
-//            TextField("New Message", text: $newMessageText)
-//                .textFieldStyle(RoundedBorderTextFieldStyle())
-//
-//            Button("Add Message") {
-//                let newMessage = Message(id: UUID().uuidString, text: newMessageText, isSentByUser: true)
-//                lesson.conversation.append(newMessage)
-//                var updatedLesson = lesson
-//                updatedLesson.conversation.append(newMessage)
-//
-//                lessonFirebaseModel.updateLesson(lesson)
-//
-//                // Clear the input field
-//                newMessageText = ""
-//            }
-//        }
-//        .onAppear {
-//            // Start listening for changes to the lesson
-//            lessonFirebaseModel.startListening()
-//        }
-//        .onDisappear {
-//            // Stop listening when the view disappears
-//            lessonFirebaseModel.stopListening()
-//        }
-//    }
-//}

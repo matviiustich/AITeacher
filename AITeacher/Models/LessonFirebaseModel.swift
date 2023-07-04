@@ -14,6 +14,7 @@ class LessonFirebaseModel: ObservableObject {
     private var listener: ListenerRegistration?
     
     @Published var lessons: [Lesson] = []
+    @Published var preferences: UserPreferences?
     
     func createLesson(title: String) {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
@@ -23,7 +24,7 @@ class LessonFirebaseModel: ObservableObject {
         do {
             let lessonID = UUID().uuidString
             print(lessonID)
-            let lesson = Lesson(id: lessonID, title: title, lastUpdated: .now, conversation: [], memory: [["role" : "system", "content" : loadPrompt()]])
+            let lesson = Lesson(id: lessonID, title: title, lastUpdated: .now, chapters: [])
             let lessonData = try JSONEncoder().encode(lesson)
             let lessonDict = try JSONSerialization.jsonObject(with: lessonData, options: []) as? [String: Any]
             
@@ -44,22 +45,18 @@ class LessonFirebaseModel: ObservableObject {
         }
     }
     
-    func retrieveLessons(completion: @escaping ([Lesson]) -> Void) {
+    func retrieveLessons() async -> [Lesson] {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             print("No authenticated user found")
-            return
+            return []
         }
+        
         let usersCollection = db.collection("users").document(currentUserID)
-        usersCollection.collection("lessons").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error retrieving lessons: \(error.localizedDescription)")
-                completion([])
-                return
-            }
-            
+        do {
+            let snapshot = try await usersCollection.collection("lessons").order(by: "lastUpdated", descending: true).getDocuments()
             var lessons: [Lesson] = []
             
-            for document in snapshot?.documents ?? [] {
+            for document in snapshot.documents {
                 do {
                     let jsonData = try JSONSerialization.data(withJSONObject: document.data(), options: [])
                     let lesson = try JSONDecoder().decode(Lesson.self, from: jsonData)
@@ -69,9 +66,13 @@ class LessonFirebaseModel: ObservableObject {
                 }
             }
             
-            completion(lessons)
+            return lessons
+        } catch {
+            print("Error retrieving lessons: \(error.localizedDescription)")
+            return []
         }
     }
+    
     
     func updateLesson(_ lesson: Lesson) {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
@@ -152,6 +153,90 @@ class LessonFirebaseModel: ObservableObject {
     func stopListening() {
         listener?.remove()
         listener = nil
+    }
+    
+    // MARK: Preferences
+    func updateUserPreferences(learningStyle: String, communicationStyle: String, toneStyle: String, reasoningFramework: String) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return
+        }
+        
+        let preferences = [
+            "learningStyle": learningStyle,
+            "communicationStyle": communicationStyle,
+            "toneStyle": toneStyle,
+            "reasoningFramework": reasoningFramework
+        ]
+        
+        let usersCollection = db.collection("users").document(currentUserID)
+        
+        // Check if the user document exists
+        usersCollection.getDocument { snapshot, error in
+            if let error = error {
+                print("Error retrieving user document: \(error.localizedDescription)")
+                return
+            }
+            
+            if snapshot?.exists == false {
+                // User document doesn't exist, create it
+                usersCollection.setData([:]) { error in
+                    if let error = error {
+                        print("Error creating user document: \(error.localizedDescription)")
+                    } else {
+                        print("User document created successfully.")
+                        // Update the preferences after creating the document
+                        usersCollection.updateData(preferences) { error in
+                            if let error = error {
+                                print("Error updating user preferences: \(error.localizedDescription)")
+                            } else {
+                                print("User preferences updated successfully.")
+                            }
+                        }
+                    }
+                }
+            } else {
+                // User document exists, update the preferences
+                usersCollection.updateData(preferences) { error in
+                    if let error = error {
+                        print("Error updating user preferences: \(error.localizedDescription)")
+                    } else {
+                        print("User preferences updated successfully.")
+                    }
+                }
+            }
+        }
+    }
+    
+//    @MainActor
+    func retrieveUserPreferences() async -> UserPreferences? {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            print("No authenticated user found")
+            return nil
+        }
+        
+        let usersCollection = db.collection("users").document(currentUserID)
+        
+        do {
+            let snapshot = try await usersCollection.getDocument()
+            guard let userData = snapshot.data(),
+                  let learningStyle = userData["learningStyle"] as? String,
+                  let communicationStyle = userData["communicationStyle"] as? String,
+                  let toneStyle = userData["toneStyle"] as? String,
+                  let reasoningFramework = userData["reasoningFramework"] as? String
+            else {
+                return nil
+            }
+            
+            let userPreferences = UserPreferences(learningStyle: learningStyle,
+                                                  communicationStyle: communicationStyle,
+                                                  toneStyle: toneStyle,
+                                                  reasoningFramework: reasoningFramework)
+            return userPreferences
+        } catch {
+            print("Error retrieving user preferences: \(error.localizedDescription)")
+            return nil
+        }
     }
     
 }

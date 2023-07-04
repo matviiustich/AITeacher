@@ -13,19 +13,26 @@ struct Message: Identifiable, Hashable, Codable {
     let isSentByUser: Bool
 }
 
+struct Chapter: Identifiable, Hashable, Codable {
+    let id: String
+    
+    let title: String
+    var conversation: [Message]
+    var memory: [[String: String]]
+}
+
 struct Lesson: Identifiable, Hashable, Codable {
+    
     let id: String
     
     let title: String
     let lastUpdated: Date
-    var conversation: [Message]
-    var memory: [[String: String]]
-    
-    // Lesson configuration
-    var depthLevel: Int?
-    var learningStyle: String?
-    var communicationStyle: String?
-    var toneStyle: String?
-    var reasoningFramework: String?
-    
+    var chapters: [Chapter]
+}
+
+struct UserPreferences: Codable {
+    var learningStyle: String
+    var communicationStyle: String
+    var toneStyle: String
+    var reasoningFramework: String
 }

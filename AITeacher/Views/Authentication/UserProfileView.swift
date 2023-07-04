@@ -13,6 +13,18 @@ struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
     @State var presentingConfirmationDialog = false
     
+    @ObservedObject private var lessonsFirebase = LessonFirebaseModel()
+    
+    // Preference variables
+    @State private var selectedLearningStyle = "Sensing"
+    let learningStyles = ["Sensing", "Inductive", "Active", "Sequential", "Intuitive", "Verbal", "Deductive", "Reflective", "Global"]
+    @State private var selectedCommunicationStyle = "Stochastic"
+    let communicationStyles = ["Stochastic", "Formal", "Textbook", "Layman", "Story Telling", "Socratic", "Humorous"]
+    @State private var selectedToneStyle = "Debate"
+    let toneStyles = ["Debate", "Encouraging", "Neutral", "Informative", "Friendly"]
+    @State private var selectedReasoningFramework = "Deductive"
+    let reasoningFrameworks = ["Deductive", "Inductive", "Abductive", "Analogical", "Causal"]
+    
     var body: some View {
         Form {
             Section {
@@ -34,6 +46,42 @@ struct UserProfileView: View {
             .listRowBackground(Color(UIColor.systemGroupedBackground))
             Section("Email") {
                 Text(viewModel.displayName)
+            }
+            Section("Preferences") {
+                VStack {
+                    Picker("Learning Style", selection: $selectedLearningStyle) {
+                        ForEach(learningStyles, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    Picker("Communication Style", selection: $selectedCommunicationStyle) {
+                        ForEach(communicationStyles, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    Picker("Tone Style", selection: $selectedToneStyle) {
+                        ForEach(toneStyles, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    Picker("Reasoning Framework", selection: $selectedReasoningFramework) {
+                        ForEach(reasoningFrameworks, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                }
+                .onChange(of: selectedLearningStyle) { _ in
+                    updatePreferences()
+                }
+                .onChange(of: selectedCommunicationStyle) { _ in
+                    updatePreferences()
+                }
+                .onChange(of: selectedToneStyle) { _ in
+                    updatePreferences()
+                }
+                .onChange(of: selectedReasoningFramework) { _ in
+                    updatePreferences()
+                }
             }
             Section {
                 Button(role: .cancel, action: signOut) {
@@ -74,6 +122,13 @@ struct UserProfileView: View {
     
     private func signOut() {
         viewModel.signOut()
+    }
+    
+    private func updatePreferences() {
+        lessonsFirebase.updateUserPreferences(learningStyle: selectedLearningStyle,
+                                              communicationStyle: selectedCommunicationStyle,
+                                              toneStyle: selectedToneStyle,
+                                              reasoningFramework: selectedReasoningFramework)
     }
     
 }

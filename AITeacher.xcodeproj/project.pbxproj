@@ -18,23 +18,21 @@
 		D861DD012A4C1E7C00AAD5D6 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD002A4C1E7C00AAD5D6 /* LoginView.swift */; };
 		D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD022A4C1E9200AAD5D6 /* SignupView.swift */; };
 		D861DD072A4C519B00AAD5D6 /* LessonsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */; };
-		D861DD0A2A4C5E7A00AAD5D6 /* LessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */; };
+		D861DD0A2A4C5E7A00AAD5D6 /* ChapterConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D861DD092A4C5E7A00AAD5D6 /* ChapterConversationView.swift */; };
 		D861DD0E2A4DA2F900AAD5D6 /* prompt.txt in Resources */ = {isa = PBXBuildFile; fileRef = D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */; };
 		D861DD102A4DBD7600AAD5D6 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D861DD0F2A4DBD7600AAD5D6 /* FirebaseFirestoreSwift */; };
 		D861DD122A4DBE8900AAD5D6 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = D861DD112A4DBE8900AAD5D6 /* FirebaseFirestoreCombine-Community */; };
 		D879756A2A4AD0C200A804B3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D87975692A4AD0C200A804B3 /* FirebaseAuth */; };
 		D879756C2A4AD0C200A804B3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D879756B2A4AD0C200A804B3 /* FirebaseFirestore */; };
 		D88735382A4AF3030094A165 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D88735372A4AF3030094A165 /* GoogleService-Info.plist */; };
-		D88735412A4B06600094A165 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735402A4B06600094A165 /* Credentials.swift */; };
 		D88735442A4B07A60094A165 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735432A4B07A60094A165 /* Extension.swift */; };
 		D8AC52E62A4EBFCD00338090 /* LessonFirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */; };
 		D8AC52E82A4ECF4D00338090 /* OPENAI_API_KEY.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */; };
+		D8B1B5A72A52D051004AA1B1 /* ChaptersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */; };
 		D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */; };
 		D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9152A2F236C001E3AA7 /* ContentView.swift */; };
 		D8B9C9182A2F236D001E3AA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */; };
 		D8B9C91B2A2F236D001E3AA7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B9C91A2A2F236D001E3AA7 /* Preview Assets.xcassets */; };
-		D8B9C91D2A2F236D001E3AA7 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C91C2A2F236D001E3AA7 /* Persistence.swift */; };
-		D8B9C9202A2F236D001E3AA7 /* AITeacher.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C91E2A2F236D001E3AA7 /* AITeacher.xcdatamodeld */; };
 		D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C92A2A2F80C9001E3AA7 /* Tutor.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,20 +46,18 @@
 		D861DD002A4C1E7C00AAD5D6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		D861DD022A4C1E9200AAD5D6 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonsTabView.swift; sourceTree = "<group>"; };
-		D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonView.swift; sourceTree = "<group>"; };
+		D861DD092A4C5E7A00AAD5D6 /* ChapterConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterConversationView.swift; sourceTree = "<group>"; };
 		D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prompt.txt; sourceTree = "<group>"; };
 		D88735372A4AF3030094A165 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		D88735402A4B06600094A165 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		D88735432A4B07A60094A165 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonFirebaseModel.swift; sourceTree = "<group>"; };
 		D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OPENAI_API_KEY.txt; path = AITeacher/OPENAI_API_KEY.txt; sourceTree = SOURCE_ROOT; };
+		D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChaptersView.swift; sourceTree = "<group>"; };
 		D8B9C9102A2F236C001E3AA7 /* AITeacher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AITeacher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITeacherApp.swift; sourceTree = "<group>"; };
 		D8B9C9152A2F236C001E3AA7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D8B9C91A2A2F236D001E3AA7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		D8B9C91C2A2F236D001E3AA7 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		D8B9C91F2A2F236D001E3AA7 /* AITeacher.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AITeacher.xcdatamodel; sourceTree = "<group>"; };
 		D8B9C92A2A2F80C9001E3AA7 /* Tutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tutor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,21 +99,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D861DD042A4C200000AAD5D6 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				D8B9C91C2A2F236D001E3AA7 /* Persistence.swift */,
-				D8B9C91E2A2F236D001E3AA7 /* AITeacher.xcdatamodeld */,
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
 		D861DD052A4C50C100AAD5D6 /* Content */ = {
 			isa = PBXGroup;
 			children = (
 				D8B9C9152A2F236C001E3AA7 /* ContentView.swift */,
 				D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */,
-				D861DD092A4C5E7A00AAD5D6 /* LessonView.swift */,
+				D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */,
+				D861DD092A4C5E7A00AAD5D6 /* ChapterConversationView.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -163,7 +151,6 @@
 				D87975492A49ADDF00A804B3 /* Views */,
 				D8B9C9292A2F80AE001E3AA7 /* Models */,
 				D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */,
-				D861DD042A4C200000AAD5D6 /* CoreData */,
 				D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */,
 				D861DCF32A4C196200AAD5D6 /* Info.plist */,
 				D88735372A4AF3030094A165 /* GoogleService-Info.plist */,
@@ -184,7 +171,6 @@
 			isa = PBXGroup;
 			children = (
 				D8B9C92A2A2F80C9001E3AA7 /* Tutor.swift */,
-				D88735402A4B06600094A165 /* Credentials.swift */,
 				D85301FB2A4B1F6100324822 /* Lesson.swift */,
 				D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */,
 				D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */,
@@ -300,17 +286,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8B9C9202A2F236D001E3AA7 /* AITeacher.xcdatamodeld in Sources */,
 				D88735442A4B07A60094A165 /* Extension.swift in Sources */,
+				D8B1B5A72A52D051004AA1B1 /* ChaptersView.swift in Sources */,
 				D861DCFA2A4C1D5B00AAD5D6 /* AuthenticationViewModel.swift in Sources */,
-				D8B9C91D2A2F236D001E3AA7 /* Persistence.swift in Sources */,
-				D88735412A4B06600094A165 /* Credentials.swift in Sources */,
 				D861DCFC2A4C1D9800AAD5D6 /* UserProfileView.swift in Sources */,
 				D861DCF72A4C1CF500AAD5D6 /* AuthenticationView.swift in Sources */,
 				D861DCF52A4C1C8B00AAD5D6 /* AuthenticatedView.swift in Sources */,
 				D861DD012A4C1E7C00AAD5D6 /* LoginView.swift in Sources */,
 				D861DD072A4C519B00AAD5D6 /* LessonsTabView.swift in Sources */,
-				D861DD0A2A4C5E7A00AAD5D6 /* LessonView.swift in Sources */,
+				D861DD0A2A4C5E7A00AAD5D6 /* ChapterConversationView.swift in Sources */,
 				D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */,
 				D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */,
 				D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */,
@@ -576,19 +560,6 @@
 			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		D8B9C91E2A2F236D001E3AA7 /* AITeacher.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				D8B9C91F2A2F236D001E3AA7 /* AITeacher.xcdatamodel */,
-			);
-			currentVersion = D8B9C91F2A2F236D001E3AA7 /* AITeacher.xcdatamodel */;
-			path = AITeacher.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = D8B9C9082A2F236C001E3AA7 /* Project object */;
 }

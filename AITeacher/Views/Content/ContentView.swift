@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
+    @StateObject private var lessonsFirebase = LessonFirebaseModel()
     @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
@@ -23,12 +24,17 @@ struct ContentView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
+        .onAppear {
+//            if lessonsFirebase.preferences == nil {
+//                lessonsFirebase.updateUserPreferences(learningStyle: selectedLearningStyle, communicationStyle: selectedCommunicationStyle, toneStyle: selectedToneStyle, reasoningFramework: selectedReasoningFramework)
+//            }
+        }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}
 
