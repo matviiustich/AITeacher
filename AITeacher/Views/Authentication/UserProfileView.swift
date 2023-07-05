@@ -13,7 +13,7 @@ struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
     @State var presentingConfirmationDialog = false
     
-    @ObservedObject private var lessonsFirebase = LessonFirebaseModel()
+    @ObservedObject var lessonsFirebase: LessonFirebaseModel
     
     // Preference variables
     @State private var selectedLearningStyle = "Sensing"
@@ -136,7 +136,7 @@ struct UserProfileView: View {
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            UserProfileView()
+            UserProfileView(lessonsFirebase: LessonFirebaseModel())
                 .environmentObject(AuthenticationViewModel())
         }
     }

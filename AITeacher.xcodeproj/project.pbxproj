@@ -29,6 +29,7 @@
 		D8AC52E62A4EBFCD00338090 /* LessonFirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */; };
 		D8AC52E82A4ECF4D00338090 /* OPENAI_API_KEY.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */; };
 		D8B1B5A72A52D051004AA1B1 /* ChaptersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */; };
+		D8B1B5CE2A557986004AA1B1 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B1B5CD2A557986004AA1B1 /* MessageView.swift */; };
 		D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */; };
 		D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B9C9152A2F236C001E3AA7 /* ContentView.swift */; };
 		D8B9C9182A2F236D001E3AA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8B9C9172A2F236D001E3AA7 /* Assets.xcassets */; };
@@ -53,6 +54,7 @@
 		D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonFirebaseModel.swift; sourceTree = "<group>"; };
 		D8AC52E72A4ECF4D00338090 /* OPENAI_API_KEY.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OPENAI_API_KEY.txt; path = AITeacher/OPENAI_API_KEY.txt; sourceTree = SOURCE_ROOT; };
 		D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChaptersView.swift; sourceTree = "<group>"; };
+		D8B1B5CD2A557986004AA1B1 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D8B9C9102A2F236C001E3AA7 /* AITeacher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AITeacher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B9C9132A2F236C001E3AA7 /* AITeacherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITeacherApp.swift; sourceTree = "<group>"; };
 		D8B9C9152A2F236C001E3AA7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		D861DD052A4C50C100AAD5D6 /* Content */ = {
 			isa = PBXGroup;
 			children = (
+				D8B1B5CC2A557978004AA1B1 /* Components */,
 				D8B9C9152A2F236C001E3AA7 /* ContentView.swift */,
 				D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */,
 				D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */,
@@ -125,6 +128,14 @@
 				D88735432A4B07A60094A165 /* Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		D8B1B5CC2A557978004AA1B1 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				D8B1B5CD2A557986004AA1B1 /* MessageView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		D8B9C9072A2F236C001E3AA7 = {
@@ -298,6 +309,7 @@
 				D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */,
 				D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */,
 				D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */,
+				D8B1B5CE2A557986004AA1B1 /* MessageView.swift in Sources */,
 				D8AC52E62A4EBFCD00338090 /* LessonFirebaseModel.swift in Sources */,
 				D8B9C9142A2F236C001E3AA7 /* AITeacherApp.swift in Sources */,
 				D85301FC2A4B1F6100324822 /* Lesson.swift in Sources */,

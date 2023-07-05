@@ -14,27 +14,24 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            LessonsTabView()
-                .tabItem {
-                    Label("Lessons", systemImage: "book")
-                }
-            UserProfileView()
+            NavigationStack {
+                LessonsTabView(lessonsFirebase: lessonsFirebase)
+            }
+            .tabItem {
+                Label("Lessons", systemImage: "book")
+            }
+            UserProfileView(lessonsFirebase: lessonsFirebase)
                 .environmentObject(viewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }
         }
-        .onAppear {
-//            if lessonsFirebase.preferences == nil {
-//                lessonsFirebase.updateUserPreferences(learningStyle: selectedLearningStyle, communicationStyle: selectedCommunicationStyle, toneStyle: selectedToneStyle, reasoningFramework: selectedReasoningFramework)
-//            }
-        }
     }
 }
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
 

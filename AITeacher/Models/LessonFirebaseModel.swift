@@ -5,9 +5,8 @@
 //  Created by Александр Устич on 30.06.2023.
 //
 
-import Foundation
+import SwiftUI
 import Firebase
-import FirebaseFirestore
 
 class LessonFirebaseModel: ObservableObject {
     let db = Firestore.firestore()
@@ -240,5 +239,3 @@ class LessonFirebaseModel: ObservableObject {
     }
     
 }
-
-

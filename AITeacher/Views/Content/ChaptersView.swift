@@ -10,10 +10,13 @@ import Firebase
 import FirebaseFirestore
 
 struct ChaptersView: View {
-    @ObservedObject var lessonsFirebase = LessonFirebaseModel()
+    @ObservedObject var lessonsFirebase: LessonFirebaseModel
     @State var lesson: Lesson
     @State private var selectedChapter: Chapter? = nil
     @State private var selectedDepthLevel = "1"
+    
+    @State private var showTabBar = true
+    @State private var buttonPressed = false
     
     let depthLevels = (1...10).map { String($0) }
     
@@ -21,7 +24,6 @@ struct ChaptersView: View {
         
         Group {
             if lesson.chapters.isEmpty {
-                
                 Form {
                     VStack {
                         Section {
@@ -32,57 +34,64 @@ struct ChaptersView: View {
                             }
                         }
                         Button {
+                            buttonPressed = true
                             Task {
                                 await createChapters(lesson: lesson.title, depthLevel: "Level_\(selectedDepthLevel)", using: createChapter)
                             }
                         } label: {
-                            Text("Generate lesson plan")
-                                .foregroundColor(.white)
-                                .font(.system(size: 18))
-                                .padding(.vertical, 8)
-                                .frame(maxWidth: .infinity)
+                            if !buttonPressed {
+                                Text("Generate lesson plan")
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 18))
+                                    .padding(.vertical, 8)
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .padding(.vertical, 8)
+                                    .frame(maxWidth: .infinity)
+                            }
                         }
+                        .disabled(buttonPressed)
                         .frame(maxWidth: .infinity)
                         .buttonStyle(.borderedProminent)
                         .padding()
                     }
                 }
-                    
+                
             } else {
                 List {
                     ForEach(lesson.chapters.indices, id: \.self) { index in
                         let chapter = lesson.chapters[index]
-                        NavigationLink(
-                            destination: ChapterConversationView(lesson: lesson, chapterIndex: index),
-                            tag: chapter,
-                            selection: $selectedChapter
-                        ) {
-                            Text(chapter.title)
-                        }
-                        .onTapGesture {
-                            print(chapter)
-                            withAnimation {
-                                selectedChapter = chapter
-                            }
+                        NavigationLink(chapter.title) {
+                            ChapterConversationView(lessonsFirebase: lessonsFirebase, lesson: $lesson, chapterIndex: index)
+                                .onAppear {
+                                    withAnimation { self.showTabBar = false }
+                                }
+                                .onDisappear {
+                                    withAnimation { self.showTabBar = true }
+                                }
                         }
                     }
                 }
+                
             }
         }
-        .toolbar(selectedChapter != nil ? .hidden : .visible, for: .tabBar)
-        .navigationBarTitle(lesson.title)
+        .toolbar(showTabBar ? .visible : .hidden, for: .tabBar)
+        .navigationTitle(lesson.title)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             Task {
                 lessonsFirebase.preferences = await lessonsFirebase.retrieveUserPreferences()
             }
-            lessonsFirebase.startListening()
+            //            lessonsFirebase.startListening()
             withAnimation {
                 selectedChapter = nil
             }
         }
-        .onDisappear {
-            lessonsFirebase.stopListening()
-        }
+        //        .onDisappear {
+        //            lessonsFirebase.stopListening()
+        //        }
         
     }
     
@@ -99,6 +108,6 @@ struct ChaptersView: View {
 struct ChaptersView_Previews: PreviewProvider {
     static var previews: some View {
         let lesson = Lesson(id: "lessonID", title: "Physics", lastUpdated: .now, chapters: [])
-        ChaptersView(lesson: lesson)
+        ChaptersView(lessonsFirebase: LessonFirebaseModel(), lesson: lesson)
     }
 }

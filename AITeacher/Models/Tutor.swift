@@ -34,7 +34,7 @@ func askTutor(modelInput: [[String: String]]) async -> [String: String] {
     ]
     
     let parameters: [String: Any] = [
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-3.5-turbo", /* gpt-3.5-turbo */
         "messages": modelInput,
         "temperature": 0.7
     ]

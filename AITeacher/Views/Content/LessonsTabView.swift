@@ -10,32 +10,20 @@ import Firebase
 import FirebaseFirestore
 
 struct LessonsTabView: View {
-    @ObservedObject var lessonsFirebase = LessonFirebaseModel()
-    @State private var selectedLesson: Lesson? = nil
+    @StateObject var lessonsFirebase: LessonFirebaseModel
     @State private var showLessonTitleAlert: Bool = false
     @State private var lessonTitle: String = ""
     
     var body: some View {
-        NavigationView {
+        
             List {
                 ForEach(lessonsFirebase.lessons, id: \.self) { lesson in
-                    NavigationLink(
-                        destination: ChaptersView(lesson: lesson),
-                        tag: lesson,
-                        selection: $selectedLesson
-                    ) {
-                        Text(lesson.title)
-                            .font(.headline)
-                    }
-                    .onTapGesture {
-                        withAnimation {
-                            selectedLesson = lesson
-                        }
+                    NavigationLink(lesson.title) {
+                        ChaptersView(lessonsFirebase: lessonsFirebase, lesson: lesson)
                     }
                 }
                 .onDelete(perform: delete)
             }
-//            .toolbar(selectedLesson != nil ? .hidden : .visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -46,20 +34,18 @@ struct LessonsTabView: View {
                     
                 }
             }
-            .navigationBarTitle("Lessons")
+            .navigationTitle("Lessons")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 Task {
                     lessonsFirebase.lessons = await lessonsFirebase.retrieveLessons()
                 }
                 lessonsFirebase.startListening()
-                withAnimation {
-                    selectedLesson = nil
-                }
             }
             .onDisappear {
                 lessonsFirebase.stopListening()
             }
-        }
+        
         .alert("Lesson Topic", isPresented: $showLessonTitleAlert) {
             TextField("Title", text: $lessonTitle)
             Button("Cancel", role: .cancel, action: {})
@@ -93,6 +79,6 @@ struct LessonsTabView: View {
 
 struct LessonsTabView_Previews: PreviewProvider {
     static var previews: some View {
-        LessonsTabView()
+        LessonsTabView(lessonsFirebase: LessonFirebaseModel())
     }
 }

@@ -18,7 +18,7 @@ extension ScrollViewProxy {
         DispatchQueue.main.async {
             if let lastMessage = messages.last {
                 withAnimation {
-                    self.scrollTo(lastMessage.id)
+                    self.scrollTo(lastMessage.id, anchor: .bottom)
                 }
             }
         }
