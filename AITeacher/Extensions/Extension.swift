@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+
+func hapticsFeedback() {
+    let generator = UINotificationFeedbackGenerator()
+    generator.notificationOccurred(.success)
+}
+
 extension View {
     func dismissKeyboard() -> some View {
         modifier(DismissKeyboardModifier())
@@ -26,17 +32,13 @@ extension ScrollViewProxy {
 }
 
 struct DismissKeyboardModifier: ViewModifier {
+    @State var startPos : CGPoint = .zero
+    @State var isSwipping = true
+    
     func body(content: Content) -> some View {
         content
             .onTapGesture {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to:nil, from:nil, for:nil) // dismisses the keyboard
             }
-            .gesture(DragGesture().onChanged { value in
-                // Check if the gesture is a swipe down gesture
-                if value.translation.height > 0 {
-                    // Resign the first responder status of the text field
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
-            })
     }
 }

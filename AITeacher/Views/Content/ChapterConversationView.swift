@@ -9,10 +9,11 @@ import SwiftUI
 
 let lightGreyColor = #colorLiteral(red: 0.9376311898, green: 0.9411993623, blue: 0.9370459914, alpha: 1)
 let grey = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345496, alpha: 1)
-let purpleColor = #colorLiteral(red: 0.6149501204, green: 0.6350134015, blue: 0.9986490607, alpha: 1)
+let darkGrey = #colorLiteral(red: 0.07843136042, green: 0.07843136042, blue: 0.07843136042, alpha: 1)
 
 struct ChapterConversationView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
+    @Environment(\.colorScheme) var colorScheme
     @Binding var lesson: Lesson
     @State var chapterIndex: Int
     @State private var messageText: String = ""
@@ -25,11 +26,40 @@ struct ChapterConversationView: View {
     
     var body: some View {
         ZStack {
-            Color.white
-                .edgesIgnoringSafeArea(.all)
-                
-            messagesView
+            if colorScheme == .light {
+                Color.white
+                    .edgesIgnoringSafeArea(.all)
+            } else {
+                Color.black
+                    .edgesIgnoringSafeArea(.all)
+            }
+            
+            if lesson.chapters[chapterIndex].conversation.isEmpty {
+                VStack {
+                    Button(action: {
+                        messageText = "/start"
+                        sendMessage()
+                    }) {
+                        Text("Start Lesson")
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent)
+                    HStack {
+                        VStack { Divider() }
+                        Text("or")
+                        VStack { Divider() }
+                    }
+                    Text("Swipe for the next or previous topics")
+                        .font(.system(size: 20))
+                }
+                .padding()
+            } else {
+                messagesView
+            }
         }
+        .navigationBarTitle(lesson.chapters[chapterIndex].title, displayMode: .inline)
         .gesture(DragGesture()
             .onChanged { gesture in
                 if self.isSwipping {
@@ -40,10 +70,15 @@ struct ChapterConversationView: View {
             .onEnded { gesture in
                 let xDist =  abs(gesture.location.x - self.startPos.x)
                 let yDist =  abs(gesture.location.y - self.startPos.y)
+                if self.startPos.y <  gesture.location.y && yDist > xDist {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    
+                }
                 if self.startPos.x > gesture.location.x && yDist < xDist {
                     self.direction = "Left"
                     if chapterIndex < lesson.chapters.count - 1 {
                         withAnimation { chapterIndex += 1 }
+                        hapticsFeedback()
                         proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
                     }
 
@@ -52,6 +87,7 @@ struct ChapterConversationView: View {
                     self.direction = "Right"
                     if chapterIndex > 0 {
                         withAnimation { chapterIndex -= 1 }
+                        hapticsFeedback()
                         proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
                     }
                 }
@@ -84,7 +120,7 @@ struct ChapterConversationView: View {
                 TextField("Type a message", text: $messageText)
                     .frame(maxWidth: .infinity, maxHeight: 34)
                     .padding(.horizontal, 5)
-                    .background(Color(lightGreyColor))
+                    .background(colorScheme == .light ? Color(lightGreyColor) : Color(darkGrey))
                     .font(.system(size: 16))
                     .cornerRadius(10)
                     .padding(.leading)
@@ -96,16 +132,16 @@ struct ChapterConversationView: View {
                                 .resizable()
                                 .frame(width: 17, height: 17)
                                 .padding(9)
-                                .background(Color(purpleColor))
+                                .background(Color.blue)
                                 .foregroundColor(.white)
                                 .clipShape(Circle())
                         } else {
                             Circle()
-                                .stroke(Color(purpleColor), lineWidth: 3)
+                                .stroke(Color.blue, lineWidth: 3)
                                 .frame(width: 35, height: 35)
                                 .overlay(
                                     ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: Color(purpleColor)))
+                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
                                         .scaleEffect(0.8)
                                 )
                         }
@@ -116,7 +152,6 @@ struct ChapterConversationView: View {
             }
             .padding(.bottom)
         }
-        .navigationBarTitle(lesson.chapters[chapterIndex].title, displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {

@@ -9,7 +9,7 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-    @StateObject private var lessonsFirebase = LessonFirebaseModel()
+    @StateObject var lessonsFirebase = LessonFirebaseModel()
     @EnvironmentObject var viewModel: AuthenticationViewModel
     
     var body: some View {
@@ -20,12 +20,14 @@ struct ContentView: View {
             .tabItem {
                 Label("Lessons", systemImage: "book")
             }
-            UserProfileView(lessonsFirebase: lessonsFirebase)
+            UserProfileView(lessonsFirebase: lessonsFirebase, selectedLearningStyle: lessonsFirebase.preferences?.learningStyle ?? "Sensing", selectedCommunicationStyle: lessonsFirebase.preferences?.communicationStyle ?? "Stochastic", selectedToneStyle: lessonsFirebase.preferences?.toneStyle ?? "Debate", selectedReasoningFramework: lessonsFirebase.preferences?.reasoningFramework ?? "Deductive")
                 .environmentObject(viewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }
         }
+        
+        
     }
 }
 

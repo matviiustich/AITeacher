@@ -20,7 +20,7 @@ struct MessageView: View {
                     Text("YOU")
                         .bold()
                         .font(.system(size: 14))
-                        .foregroundColor(Color(grey))
+//                        .foregroundColor(Color(grey))
                     Spacer()
                 } else {
                     Image(systemName: "book.circle")
@@ -29,7 +29,7 @@ struct MessageView: View {
                     Text("TUTOR")
                         .bold()
                         .font(.system(size: 14))
-                        .foregroundColor(Color(grey))
+//                        .foregroundColor(Color(grey))
                     Spacer()
                 }
             }

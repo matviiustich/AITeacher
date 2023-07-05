@@ -16,13 +16,13 @@ struct UserProfileView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
     
     // Preference variables
-    @State private var selectedLearningStyle = "Sensing"
+    @State var selectedLearningStyle: String
     let learningStyles = ["Sensing", "Inductive", "Active", "Sequential", "Intuitive", "Verbal", "Deductive", "Reflective", "Global"]
-    @State private var selectedCommunicationStyle = "Stochastic"
+    @State var selectedCommunicationStyle: String
     let communicationStyles = ["Stochastic", "Formal", "Textbook", "Layman", "Story Telling", "Socratic", "Humorous"]
-    @State private var selectedToneStyle = "Debate"
+    @State var selectedToneStyle: String
     let toneStyles = ["Debate", "Encouraging", "Neutral", "Informative", "Friendly"]
-    @State private var selectedReasoningFramework = "Deductive"
+    @State var selectedReasoningFramework: String
     let reasoningFrameworks = ["Deductive", "Inductive", "Abductive", "Analogical", "Causal"]
     
     var body: some View {
@@ -133,11 +133,11 @@ struct UserProfileView: View {
     
 }
 
-struct UserProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            UserProfileView(lessonsFirebase: LessonFirebaseModel())
-                .environmentObject(AuthenticationViewModel())
-        }
-    }
-}
+//struct UserProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            UserProfileView(lessonsFirebase: LessonFirebaseModel())
+//                .environmentObject(AuthenticationViewModel())
+//        }
+//    }
+//}

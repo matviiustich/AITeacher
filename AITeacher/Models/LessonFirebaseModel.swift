@@ -5,8 +5,9 @@
 //  Created by Александр Устич on 30.06.2023.
 //
 
-import SwiftUI
+import Foundation
 import Firebase
+import FirebaseFirestore
 
 class LessonFirebaseModel: ObservableObject {
     let db = Firestore.firestore()
@@ -14,6 +15,24 @@ class LessonFirebaseModel: ObservableObject {
     
     @Published var lessons: [Lesson] = []
     @Published var preferences: UserPreferences?
+    
+    init() {
+        initializeData()
+        startListening()
+    }
+    
+    private func initializeData() {
+        async {
+            let retrievedLessons = await retrieveLessons()
+            let retrievedPreferences = await retrieveUserPreferences()
+            
+            DispatchQueue.main.async {
+                self.lessons = retrievedLessons
+                self.preferences = retrievedPreferences ?? UserPreferences(learningStyle: "Sensing", communicationStyle: "Stochastic", toneStyle: "Debate", reasoningFramework: "Deductive")
+                //                self.startListening()
+            }
+        }
+    }
     
     func createLesson(title: String) {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
@@ -116,44 +135,44 @@ class LessonFirebaseModel: ObservableObject {
         }
     }
     
-    func startListening() {
-        guard let currentUserID = Auth.auth().currentUser?.uid else {
-            print("No authenticated user found")
-            return
-        }
-        
-        stopListening()
-        
-        let usersCollection = db.collection("users").document(currentUserID)
-        listener = usersCollection.collection("lessons").order(by: "lastUpdated", descending: true).addSnapshotListener { snapshot, error in
-            if let error = error {
-                print("Error listening for lessons: \(error.localizedDescription)")
+    
+        func startListening() {
+            guard let currentUserID = Auth.auth().currentUser?.uid else {
+                print("No authenticated user found")
                 return
             }
-            
-            guard let documents = snapshot?.documents else {
-                print("No documents found.")
-                return
-            }
-            
-            self.lessons = documents.compactMap { document in
-                do {
-                    let jsonData = try JSONSerialization.data(withJSONObject: document.data(), options: [])
-                    let lesson = try JSONDecoder().decode(Lesson.self, from: jsonData)
-                    return lesson
-                } catch {
-                    print("Error decoding lesson: \(error.localizedDescription)")
-                    return nil
+    
+            stopListening()
+    
+            let usersCollection = db.collection("users").document(currentUserID)
+            listener = usersCollection.collection("lessons").order(by: "lastUpdated", descending: true).addSnapshotListener { snapshot, error in
+                if let error = error {
+                    print("Error listening for lessons: \(error.localizedDescription)")
+                    return
+                }
+    
+                guard let documents = snapshot?.documents else {
+                    print("No documents found.")
+                    return
+                }
+    
+                self.lessons = documents.compactMap { document in
+                    do {
+                        let jsonData = try JSONSerialization.data(withJSONObject: document.data(), options: [])
+                        let lesson = try JSONDecoder().decode(Lesson.self, from: jsonData)
+                        return lesson
+                    } catch {
+                        print("Error decoding lesson: \(error.localizedDescription)")
+                        return nil
+                    }
                 }
             }
         }
-    }
     
     func stopListening() {
         listener?.remove()
         listener = nil
     }
-    
     // MARK: Preferences
     func updateUserPreferences(learningStyle: String, communicationStyle: String, toneStyle: String, reasoningFramework: String) {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
@@ -207,7 +226,7 @@ class LessonFirebaseModel: ObservableObject {
         }
     }
     
-//    @MainActor
+    //    @MainActor
     func retrieveUserPreferences() async -> UserPreferences? {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             print("No authenticated user found")
@@ -239,3 +258,5 @@ class LessonFirebaseModel: ObservableObject {
     }
     
 }
+
+
