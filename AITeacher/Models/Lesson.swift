@@ -9,7 +9,7 @@ import Foundation
 
 struct Message: Identifiable, Hashable, Codable {
     let id: String
-    let text: String
+    var text: String
     let isSentByUser: Bool
 }
 

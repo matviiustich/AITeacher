@@ -15,7 +15,6 @@ struct LessonsTabView: View {
     @State private var lessonTitle: String = ""
     
     var body: some View {
-        
         List {
             ForEach(lessonsFirebase.lessons, id: \.self) { lesson in
                 NavigationLink(lesson.title) {

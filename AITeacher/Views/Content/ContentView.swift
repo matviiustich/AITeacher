@@ -7,6 +7,9 @@
 
 import SwiftUI
 import Firebase
+import OpenAI
+
+let openAI = OpenAI(apiToken: "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")
 
 struct ContentView: View {
     @StateObject var lessonsFirebase = LessonFirebaseModel()
@@ -26,7 +29,6 @@ struct ContentView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
-        
         
     }
 }

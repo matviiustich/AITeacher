@@ -34,10 +34,10 @@ struct ChaptersView: View {
                             }
                         }
                         Button {
-                            buttonPressed = true
                             Task {
                                 await createChapters(lesson: lesson.title, depthLevel: "Level_\(selectedDepthLevel)", using: createChapter)
                             }
+                            buttonPressed = true
                         } label: {
                             if !buttonPressed {
                                 Text("Generate lesson plan")

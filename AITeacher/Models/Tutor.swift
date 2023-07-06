@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OpenAI
 
 func loadPrompt() -> String {
     let path = Bundle.main.path(forResource: "prompt", ofType: "txt")
@@ -16,154 +17,75 @@ func loadPrompt() -> String {
     }
 }
 
-func askTutor(modelInput: [[String: String]]) async -> [String: String] {
-    let path = Bundle.main.path(forResource: "OPENAI_API_KEY", ofType: "txt")
-    var apiKey: String = ""
-    do {
-        apiKey = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
-    } catch {
-        fatalError("Error occured while extracting API key")
-    }
-    
-    let urlString = "https://api.openai.com/v1/chat/completions"
-    let url = URL(string: urlString)!
-    
-    let headers = [
-        "Content-Type": "application/json",
-        "Authorization": "Bearer \(apiKey)"
-    ]
-    
-    let parameters: [String: Any] = [
-        "model": "gpt-3.5-turbo", /* gpt-3.5-turbo */
-        "messages": modelInput,
-        "temperature": 0.7
-    ]
-    
-    var assistantMessage: [String: String] = [:]  // Initialize with empty dictionary
-    
-    do {
-        let jsonData = try JSONSerialization.data(withJSONObject: parameters)
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.allHTTPHeaderFields = headers
-        request.httpBody = jsonData
-        
-        let (data, _) = try await URLSession.shared.data(for: request)
-        
-        do {
-            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            
-            if let choices = json?["choices"] as? [[String: Any]],
-               let tutorMessage = choices[0]["message"] as? [String: String],
-               let tutorContent = tutorMessage["content"] {
-                print("AI Tutor:", tutorContent)
-                
-                assistantMessage = [
-                    "role": "assistant",
-                    "content": tutorContent
-                ]
-            }
-        } catch {
-            print("Error parsing JSON: \(error)")
+func memoryToChat(memory: [[String: String]]) -> [Chat] {
+    var chat: [Chat] = []
+    for el in memory {
+        if el["role"] == "user" {
+            chat.append(Chat(role: .user, content: el["content"]))
+        } else if el["role"] == "system" {
+            chat.append(Chat(role: .system, content: el["content"]))
+        } else {
+            chat.append(Chat(role: .assistant, content: el["content"]))
         }
-        
-    } catch {
-        print("Error: \(error)")
     }
-    
-    return assistantMessage
+    return chat
 }
 
 func createChapters(lesson: String, depthLevel: String, using createChapter: @MainActor (String) -> ()) async {
-    
-    let messages: [[String: String]] = [
-        ["role": "system", "content": loadPrompt()],
-        ["role": "system", "content": "Create a plan for the \(lesson) lesson with a depth level of \(depthLevel), by listing the topics that need to be covered to learn the subject. CALL createChapter function for EVERY topic listed"]
+    let functions = [
+        ChatFunctionDeclaration(
+            name: "createChapter",
+            description: "Creates lessons based on the given topics",
+            parameters:
+                JSONSchema(
+                    type: .object,
+                    properties: [
+                        "topics": .init(
+                            type: .array,
+                            description: "The lesson topics, e.g. Linear algebra", items: .init(type: .string)
+                        ),
+                        "unit": .init(type: .string, enumValues: ["celsius", "fahrenheit"])
+                    ],
+                    required: ["locations"]
+                )
+        )
     ]
     
-    let functions: [[String: Any]] = [
-        [
-            "name": "createChapter",
-            "description": "Creates lessons based on the given topics",
-            "parameters": [
-                "type": "object",
-                "properties": [
-                    "topics": [
-                        "type": "array",
-                        "items": [
-                            "type": "string"
-                        ],
-                        "description": "The lesson topics, e.g. Linear algebra"
-                    ] as [String : Any]
-                ],
-                "required": ["topics"]
-            ] as [String : Any]
-        ]
-    ]
     
-    let path = Bundle.main.path(forResource: "OPENAI_API_KEY", ofType: "txt")
-    var apiKey: String = ""
-    do {
-        apiKey = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
-    } catch {
-        fatalError("Error occured while extracting API key")
-    }
     
-    let urlString = "https://api.openai.com/v1/chat/completions"
-    let url = URL(string: urlString)!
     
-    let headers = [
-        "Content-Type": "application/json",
-        "Authorization": "Bearer \(apiKey)"
-    ]
-    
-    let parameters: [String: Any] = [
-        "model": "gpt-3.5-turbo-0613",
-        "messages": messages,
-        "functions": functions,
-        "function_call": "auto"
-    ]
-    
-    var funcContent: [String]?
+    let query = ChatQuery(
+        model: "gpt-3.5-turbo-0613",
+        messages: [Chat(role: .system, content: loadPrompt()), Chat(role: .system, content: "Create a plan for the \(lesson) lesson with a depth level of \(depthLevel), by listing the topics that need to be covered to learn the subject. CALL createChapter function for EVERY topic listed")],
+        functions: functions
+    )
     
     do {
-        let jsonData = try JSONSerialization.data(withJSONObject: parameters)
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.allHTTPHeaderFields = headers
-        request.httpBody = jsonData
-        
-        let (data, _) = try await URLSession.shared.data(for: request)
-        
-        do {
-            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            if let choices = json?["choices"] as? [[String: Any]],
-               let tutorMessage = choices[0]["message"] as? [String: Any], let functions = tutorMessage["function_call"] as? [String: Any], let arguments = functions["arguments"] as? String, let jsonData = arguments.data(using: .utf8) {
-                
+        let result = try await openAI.chats(query: query)
+        if let function = result.choices[0].message.functionCall {
+            if function.name == "createChapter" && function.arguments != nil {
+                let jsonString = function.arguments!
+
+                guard let jsonData = jsonString.data(using: .utf8) else {
+                    fatalError("Failed to convert string to data.")
+                }
+
                 do {
                     let decoder = JSONDecoder()
-                    let data = try decoder.decode([String: [String]].self, from: jsonData)
-                    funcContent = data["topics"]
+                    let dictionary = try decoder.decode([String: [String]].self, from: jsonData)
+                    if dictionary["topics"] != nil {
+                        for element in dictionary["topics"]! {
+                            await createChapter(element)
+                        }
+                    }
+                    print(dictionary)
                 } catch {
-                    fatalError("Error decoding JSON: \(error)")
+                    fatalError("Failed to decode JSON: \(error)")
                 }
-                
-                
+
             }
-        } catch {
-            print("Error parsing JSON: \(error)")
         }
-        
     } catch {
         print("Error: \(error)")
-    }
-    
-    if let funcContent = funcContent {
-        for arg in funcContent {
-            await createChapter(arg)
-        }
-        
     }
 }

@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import OpenAI
 
-let lightGreyColor = #colorLiteral(red: 0.9376311898, green: 0.9411993623, blue: 0.9370459914, alpha: 1)
-let grey = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345496, alpha: 1)
-let darkGrey = #colorLiteral(red: 0.07843136042, green: 0.07843136042, blue: 0.07843136042, alpha: 1)
+let lightGrayColor = #colorLiteral(red: 0.9376311898, green: 0.9411993623, blue: 0.9370459914, alpha: 1)
+let gray = #colorLiteral(red: 0.6312714219, green: 0.6313036084, blue: 0.6396345496, alpha: 1)
+let darkGray = #colorLiteral(red: 0.07843136042, green: 0.07843136042, blue: 0.07843136042, alpha: 1)
+let myGrayColor = #colorLiteral(red: 0.8163583279, green: 0.8272079229, blue: 0.8522316813, alpha: 1)
+let myDarkGrayColor = #colorLiteral(red: 0.1686274707, green: 0.1686274707, blue: 0.1686274707, alpha: 1)
 
 struct ChapterConversationView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
@@ -37,8 +40,10 @@ struct ChapterConversationView: View {
             if lesson.chapters[chapterIndex].conversation.isEmpty {
                 VStack {
                     Button(action: {
-                        messageText = "/start"
-                        sendMessage()
+                        hapticsFeedback()
+                        withAnimation {
+                            lessonFunction(command: "/start")
+                        }
                     }) {
                         Text("Start Lesson")
                             .padding(.vertical, 8)
@@ -74,21 +79,23 @@ struct ChapterConversationView: View {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     
                 }
-                if self.startPos.x > gesture.location.x && yDist < xDist {
-                    self.direction = "Left"
-                    if chapterIndex < lesson.chapters.count - 1 {
-                        withAnimation { chapterIndex += 1 }
-                        hapticsFeedback()
-                        proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
+                if canSendMessage {
+                    if self.startPos.x > gesture.location.x && yDist < xDist {
+                        self.direction = "Left"
+                        if chapterIndex < lesson.chapters.count - 1 {
+                            withAnimation { chapterIndex += 1 }
+                            hapticsFeedback()
+                            proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
+                        }
+                        
                     }
-
-                }
-                else if self.startPos.x < gesture.location.x && yDist < xDist {
-                    self.direction = "Right"
-                    if chapterIndex > 0 {
-                        withAnimation { chapterIndex -= 1 }
-                        hapticsFeedback()
-                        proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
+                    else if self.startPos.x < gesture.location.x && yDist < xDist {
+                        self.direction = "Right"
+                        if chapterIndex > 0 {
+                            withAnimation { chapterIndex -= 1 }
+                            hapticsFeedback()
+                            proxy?.scrollToLastMessage(messages: lesson.chapters[chapterIndex].conversation)
+                        }
                     }
                 }
                 self.isSwipping.toggle()
@@ -115,59 +122,61 @@ struct ChapterConversationView: View {
                 })
                 .padding()
             }
-            
-            HStack {
-                TextField("Type a message", text: $messageText)
-                    .frame(maxWidth: .infinity, maxHeight: 34)
-                    .padding(.horizontal, 5)
-                    .background(colorScheme == .light ? Color(lightGreyColor) : Color(darkGrey))
-                    .font(.system(size: 16))
-                    .cornerRadius(10)
-                    .padding(.leading)
-                
-                Button(action: sendMessage) {
-                    ZStack {
-                        if canSendMessage {
-                            Image(systemName: "arrow.up")
-                                .resizable()
-                                .frame(width: 17, height: 17)
-                                .padding(9)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .clipShape(Circle())
-                        } else {
-                            Circle()
-                                .stroke(Color.blue, lineWidth: 3)
-                                .frame(width: 35, height: 35)
-                                .overlay(
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
-                                        .scaleEffect(0.8)
-                                )
+            VStack {
+                HStack {
+                    TextField("Type a message", text: $messageText)
+                        .frame(maxWidth: .infinity, maxHeight: 34)
+                        .padding(.horizontal, 5)
+                        .background(colorScheme == .light ? Color(lightGrayColor) : Color(darkGray))
+                        .font(.system(size: 16))
+                        .cornerRadius(10)
+                        .padding(.leading)
+                    
+                    
+                    Button(action: sendMessage) {
+                        ZStack {
+                            if canSendMessage {
+                                Image(systemName: "arrow.up")
+                                    .resizable()
+                                    .frame(width: 17, height: 17)
+                                    .padding(9)
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .clipShape(Circle())
+                            } else {
+                                Circle()
+                                    .stroke(Color.blue, lineWidth: 3)
+                                    .frame(width: 35, height: 35)
+                                    .overlay(
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: Color.blue))
+                                            .scaleEffect(0.8)
+                                    )
+                            }
                         }
                     }
+                    .disabled(!canSendMessage)
+                    .padding(.trailing)
                 }
-                .disabled(!canSendMessage)
-                .padding(.trailing)
-            }
-            .padding(.bottom)
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button(action: {
-                        lessonFunction(command: "/test")
-                    }) {
-                        Label("Test", systemImage: "pencil")
+                VStack {
+                    HStack {
+                        Button("Continue") {
+                            hapticsFeedback()
+                            lessonFunction(command: "/Continue")
+                        }
+                        .disabled(!canSendMessage)
+                        Spacer()
+                        Button("Test") {
+                            hapticsFeedback()
+                            lessonFunction(command: "/Test")
+                        }
+                        .disabled(!canSendMessage)
                     }
-                    
-                    Button(action: {
-                        lessonFunction(command: "/continue")
-                    }) {
-                        Label("Continue", systemImage: "arrow.right.circle")
-                    }
-                } label: {
-                    Image(systemName: "contextualmenu.and.cursorarrow")
+                    .padding(.horizontal)
+                    .frame(idealWidth: .infinity, maxWidth: .infinity,
+                           idealHeight: 40, maxHeight: 40,
+                           alignment: .center)
+                    .background(colorScheme == .light ? Color(myGrayColor) : Color(myDarkGrayColor))
                 }
             }
         }
@@ -187,18 +196,28 @@ struct ChapterConversationView: View {
             withAnimation {
                 canSendMessage = false
             }
-            print(lesson.chapters[chapterIndex].memory)
-            let lessonCopy = lesson
-            let chapterIndexCopy = chapterIndex
-            let result = await askTutor(modelInput: lessonCopy.chapters[chapterIndexCopy].memory)
-            let resultContent = result["content"] ?? "Error occured while loading the answer"
-            lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : resultContent])
-            let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
-            withAnimation {
-                lesson.chapters[chapterIndex].conversation.append(tutorMessage)
-                canSendMessage = true
+            let messages = memoryToChat(memory: lesson.chapters[chapterIndex].memory)
+            let query = ChatQuery(model: .gpt3_5Turbo_16k, messages: messages)
+            lesson.chapters[chapterIndex].conversation.append(Message(id: UUID().uuidString, text: "", isSentByUser: false))
+            let lastIndex = lesson.chapters[chapterIndex].conversation.indices.last
+            do {
+                for try await result in openAI.chatsStream(query: query) {
+                    if let chunk = result.choices.first?.delta.content {
+                        if let lastIndex {
+                            lesson.chapters[chapterIndex].conversation[lastIndex].text += chunk
+                        }
+                    }
+                }
+            } catch {
+                print("Error occured while streaming the tutor's response")
+            }
+            if let lastIndex {
+                lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : lesson.chapters[chapterIndex].conversation[lastIndex].text])
             }
             lessonsFirebase.updateLesson(lesson)
+            withAnimation {
+                canSendMessage = true
+            }
         }
         
     }
@@ -209,16 +228,28 @@ struct ChapterConversationView: View {
             withAnimation {
                 canSendMessage = false
             }
-            lesson.chapters[chapterIndex].memory.append(["role" : "user", "content" : command])
-            let lessonCopy = lesson
-            let chapterIndexCopy = chapterIndex
-            let result = await askTutor(modelInput: lessonCopy.chapters[chapterIndexCopy].memory)
-            let resultContent = result["content"] ?? "Error occured while loading the answer"
-            lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : resultContent])
-            let tutorMessage = Message(id: UUID().uuidString, text: resultContent, isSentByUser: false)
+            lesson.chapters[chapterIndex].memory.append(["role" : "system", "content" : command])
+            let messages = memoryToChat(memory: lesson.chapters[chapterIndex].memory)
+            let query = ChatQuery(model: .gpt3_5Turbo_16k, messages: messages)
             withAnimation {
-                lesson.chapters[chapterIndex].conversation.append(tutorMessage)
+                lesson.chapters[chapterIndex].conversation.append(Message(id: UUID().uuidString, text: "", isSentByUser: false))
             }
+            let lastIndex = lesson.chapters[chapterIndex].conversation.indices.last
+            do {
+                for try await result in openAI.chatsStream(query: query) {
+                    if let chunk = result.choices.first?.delta.content {
+                        if let lastIndex {
+                            lesson.chapters[chapterIndex].conversation[lastIndex].text += chunk
+                        }
+                    }
+                }
+            } catch {
+                print("Error occured while streaming the tutor's response")
+            }
+            if let lastIndex {
+                lesson.chapters[chapterIndex].memory.append(["role" : "assistant", "content" : lesson.chapters[chapterIndex].conversation[lastIndex].text])
+            }
+            lessonsFirebase.updateLesson(lesson)
             withAnimation {
                 canSendMessage = true
             }
@@ -229,7 +260,7 @@ struct ChapterConversationView: View {
 
 struct LessonView_Previews: PreviewProvider {
     static var previews: some View {
-        let lesson = Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, chapters: [Chapter(id: UUID().uuidString, title: "Motion", conversation: [], memory: [[:]])])
+        let lesson = Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, chapters: [Chapter(id: UUID().uuidString, title: "Motion", conversation: [Message(id: "someID", text: "Hello!", isSentByUser: true)], memory: [[:]])])
         ChapterConversationView(lessonsFirebase: LessonFirebaseModel(), lesson: .constant(lesson), chapterIndex: 0)
     }
 }
