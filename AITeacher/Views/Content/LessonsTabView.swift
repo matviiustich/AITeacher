@@ -13,6 +13,7 @@ struct LessonsTabView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
     @State private var showLessonTitleAlert: Bool = false
     @State private var lessonTitle: String = ""
+    @State var createButtonPressed: Bool = false
     
     var body: some View {
         List {
@@ -20,8 +21,15 @@ struct LessonsTabView: View {
                 NavigationLink(lesson.title) {
                     ChaptersView(lessonsFirebase: lessonsFirebase, lesson: lesson)
                 }
+                .contextMenu {
+                    Button(role: .destructive) {
+                        lessonsFirebase.deleteLesson(lesson)
+                        hapticsFeedback()
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
-            .onDelete(perform: delete)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -35,36 +43,12 @@ struct LessonsTabView: View {
         }
         .navigationTitle("Lessons")
         .navigationBarTitleDisplayMode(.inline)
-
-        
-        .alert("Lesson Topic", isPresented: $showLessonTitleAlert) {
-            TextField("Title", text: $lessonTitle)
-            Button("Cancel", role: .cancel, action: {})
-            Button {
-                withAnimation {
-                    lessonsFirebase.createLesson(title: lessonTitle)
-                }
-                lessonTitle = ""
-                showLessonTitleAlert = false
-            } label: {
-                Text("Save")
-            }
-            
-        } message: {
-            Text("Enter lesson's topic")
+        .popover(isPresented: $showLessonTitleAlert) {
+            CreateLessonView(lessonsFirebase: lessonsFirebase, buttonPressed: $createButtonPressed)
+                .interactiveDismissDisabled(createButtonPressed ? true : false)
         }
         
     }
-    
-    func delete(at offsets: IndexSet) {
-        if let deletedIndex = offsets.first {
-            let deletedLesson = lessonsFirebase.lessons[deletedIndex]
-            print("Deleted Lesson ID: \(deletedLesson.id)")
-            // Perform deletion logic here
-            lessonsFirebase.deleteLesson(deletedLesson)
-        }
-    }
-    
     
 }
 

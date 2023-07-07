@@ -64,6 +64,7 @@ struct ChapterConversationView: View {
                 messagesView
             }
         }
+        .navigationBarBackButtonHidden(canSendMessage ? false : true)
         .navigationBarTitle(lesson.chapters[chapterIndex].title, displayMode: .inline)
         .gesture(DragGesture()
             .onChanged { gesture in

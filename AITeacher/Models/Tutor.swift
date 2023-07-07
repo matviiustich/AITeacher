@@ -8,6 +8,11 @@
 import Foundation
 import OpenAI
 
+enum NetworkingError: Error {
+    case timeLimit
+    case overload
+}
+
 func loadPrompt() -> String {
     let path = Bundle.main.path(forResource: "prompt", ofType: "txt")
     do {
@@ -31,7 +36,7 @@ func memoryToChat(memory: [[String: String]]) -> [Chat] {
     return chat
 }
 
-func createChapters(lesson: String, depthLevel: String, using createChapter: @MainActor (String) -> ()) async {
+func createChapters(lesson: String, depthLevel: String, language: String, using createChapter: @MainActor (String) -> ()) async throws {
     let functions = [
         ChatFunctionDeclaration(
             name: "createChapter",
@@ -56,7 +61,7 @@ func createChapters(lesson: String, depthLevel: String, using createChapter: @Ma
     
     let query = ChatQuery(
         model: "gpt-3.5-turbo-0613",
-        messages: [Chat(role: .system, content: loadPrompt()), Chat(role: .system, content: "Create a plan for the \(lesson) lesson with a depth level of \(depthLevel), by listing the topics that need to be covered to learn the subject. CALL createChapter function for EVERY topic listed")],
+        messages: [Chat(role: .system, content: loadPrompt()), Chat(role: .system, content: "Create a plan for the \(lesson) lesson in \(language) language with a depth level of \(depthLevel), by listing the topics that need to be covered to learn the subject. CALL createChapter function for ALL topics listed")],
         functions: functions
     )
     
@@ -87,5 +92,6 @@ func createChapters(lesson: String, depthLevel: String, using createChapter: @Ma
         }
     } catch {
         print("Error: \(error)")
+                throw NetworkingError.timeLimit
     }
 }

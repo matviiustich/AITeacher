@@ -16,6 +16,8 @@ struct UserProfileView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
     
     // Preference variables
+    @State var selectedLanguage: String
+    let languages = ["English", "Spanish", "Mandarin Chinese", "Arabic", "Hindi", "Portuguese", "Russian", "Japanese", "French", "German"]
     @State var selectedLearningStyle: String
     let learningStyles = ["Sensing", "Inductive", "Active", "Sequential", "Intuitive", "Verbal", "Deductive", "Reflective", "Global"]
     @State var selectedCommunicationStyle: String
@@ -49,6 +51,11 @@ struct UserProfileView: View {
             }
             Section("Preferences") {
                 VStack {
+                    Picker("Language", selection: $selectedLanguage) {
+                        ForEach(languages, id: \.self) {
+                            Text($0)
+                        }
+                    }
                     Picker("Learning Style", selection: $selectedLearningStyle) {
                         ForEach(learningStyles, id: \.self) {
                             Text($0)
@@ -70,6 +77,9 @@ struct UserProfileView: View {
                         }
                     }
                 }
+                .onChange(of: selectedLanguage, perform: { newValue in
+                    updatePreferences()
+                })
                 .onChange(of: selectedLearningStyle) { _ in
                     updatePreferences()
                 }
@@ -125,7 +135,8 @@ struct UserProfileView: View {
     }
     
     private func updatePreferences() {
-        lessonsFirebase.updateUserPreferences(learningStyle: selectedLearningStyle,
+        lessonsFirebase.updateUserPreferences(language: selectedLanguage,
+                                              learningStyle: selectedLearningStyle,
                                               communicationStyle: selectedCommunicationStyle,
                                               toneStyle: selectedToneStyle,
                                               reasoningFramework: selectedReasoningFramework)

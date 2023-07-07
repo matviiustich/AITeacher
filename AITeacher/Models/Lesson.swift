@@ -31,6 +31,7 @@ struct Lesson: Identifiable, Hashable, Codable {
 }
 
 struct UserPreferences: Codable {
+    var language: String
     var learningStyle: String
     var communicationStyle: String
     var toneStyle: String

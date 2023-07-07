@@ -26,6 +26,7 @@
 		D879756C2A4AD0C200A804B3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D879756B2A4AD0C200A804B3 /* FirebaseFirestore */; };
 		D88735382A4AF3030094A165 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D88735372A4AF3030094A165 /* GoogleService-Info.plist */; };
 		D88735442A4B07A60094A165 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88735432A4B07A60094A165 /* Extension.swift */; };
+		D89419DA2A57ECA00000B1B8 /* CreateLessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89419D92A57ECA00000B1B8 /* CreateLessonView.swift */; };
 		D8A280B52A56A697000C2308 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = D8A280B42A56A697000C2308 /* OpenAI */; };
 		D8AC52E62A4EBFCD00338090 /* LessonFirebaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */; };
 		D8B1B5A72A52D051004AA1B1 /* ChaptersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */; };
@@ -63,6 +64,7 @@
 		D861DD0D2A4DA2F900AAD5D6 /* prompt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prompt.txt; sourceTree = "<group>"; };
 		D88735372A4AF3030094A165 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D88735432A4B07A60094A165 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		D89419D92A57ECA00000B1B8 /* CreateLessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLessonView.swift; sourceTree = "<group>"; };
 		D8AC52E52A4EBFCD00338090 /* LessonFirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonFirebaseModel.swift; sourceTree = "<group>"; };
 		D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChaptersView.swift; sourceTree = "<group>"; };
 		D8B1B5CD2A557986004AA1B1 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				D8B1B5CC2A557978004AA1B1 /* Components */,
 				D8B9C9152A2F236C001E3AA7 /* ContentView.swift */,
 				D861DD062A4C519B00AAD5D6 /* LessonsTabView.swift */,
+				D89419D92A57ECA00000B1B8 /* CreateLessonView.swift */,
 				D8B1B5A62A52D051004AA1B1 /* ChaptersView.swift */,
 				D861DD092A4C5E7A00AAD5D6 /* ChapterConversationView.swift */,
 			);
@@ -320,6 +323,7 @@
 				D861DD072A4C519B00AAD5D6 /* LessonsTabView.swift in Sources */,
 				D861DD0A2A4C5E7A00AAD5D6 /* ChapterConversationView.swift in Sources */,
 				D861DD032A4C1E9200AAD5D6 /* SignupView.swift in Sources */,
+				D89419DA2A57ECA00000B1B8 /* CreateLessonView.swift in Sources */,
 				D8B9C92B2A2F80C9001E3AA7 /* Tutor.swift in Sources */,
 				D8B9C9162A2F236C001E3AA7 /* ContentView.swift in Sources */,
 				D8B1B5CE2A557986004AA1B1 /* MessageView.swift in Sources */,

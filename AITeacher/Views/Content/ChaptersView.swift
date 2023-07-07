@@ -13,7 +13,7 @@ struct ChaptersView: View {
     @ObservedObject var lessonsFirebase: LessonFirebaseModel
     @State var lesson: Lesson
     @State private var selectedChapter: Chapter? = nil
-    @State private var selectedDepthLevel = "1"
+    @State var selectedDepthLevel = "1"
     
     @State private var showTabBar = true
     @State private var buttonPressed = false
@@ -24,41 +24,10 @@ struct ChaptersView: View {
         
         Group {
             if lesson.chapters.isEmpty {
-                Form {
-                    VStack {
-                        Section {
-                            Picker("Depth Level", selection: $selectedDepthLevel) {
-                                ForEach(depthLevels, id: \.self) {
-                                    Text($0)
-                                }
-                            }
-                        }
-                        Button {
-                            Task {
-                                await createChapters(lesson: lesson.title, depthLevel: "Level_\(selectedDepthLevel)", using: createChapter)
-                            }
-                            buttonPressed = true
-                        } label: {
-                            if !buttonPressed {
-                                Text("Generate lesson plan")
-                                    .foregroundColor(.white)
-                                    .font(.system(size: 18))
-                                    .padding(.vertical, 8)
-                                    .frame(maxWidth: .infinity)
-                            } else {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .padding(.vertical, 8)
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                        .disabled(buttonPressed)
-                        .frame(maxWidth: .infinity)
-                        .buttonStyle(.borderedProminent)
-                        .padding()
-                    }
-                }
-                
+                Text("Sorry, the error occurred while creating this lesson. Try to delete this lesson, and then create it again.")
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 16))
+                    .padding()
             } else {
                 List {
                     ForEach(lesson.chapters.indices, id: \.self) { index in
