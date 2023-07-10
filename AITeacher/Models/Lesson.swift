@@ -22,9 +22,9 @@ struct Chapter: Identifiable, Hashable, Codable {
 }
 
 struct Lesson: Identifiable, Hashable, Codable {
-    
     let id: String
     
+    let depthLevel: Int
     let title: String
     let lastUpdated: Date
     var chapters: [Chapter]

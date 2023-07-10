@@ -15,7 +15,7 @@ let myGrayColor = #colorLiteral(red: 0.8163583279, green: 0.8272079229, blue: 0.
 let myDarkGrayColor = #colorLiteral(red: 0.1686274707, green: 0.1686274707, blue: 0.1686274707, alpha: 1)
 
 struct ChapterConversationView: View {
-    @ObservedObject var lessonsFirebase: LessonFirebaseModel
+    @EnvironmentObject var lessonsFirebase: LessonFirebaseModel
     @Environment(\.colorScheme) var colorScheme
     @Binding var lesson: Lesson
     @State var chapterIndex: Int
@@ -232,6 +232,7 @@ struct ChapterConversationView: View {
             lesson.chapters[chapterIndex].memory.append(["role" : "system", "content" : command])
             let messages = memoryToChat(memory: lesson.chapters[chapterIndex].memory)
             let query = ChatQuery(model: .gpt3_5Turbo_16k, messages: messages)
+//            let query = ChatQuery(model: .gpt4, messages: messages)
             withAnimation {
                 lesson.chapters[chapterIndex].conversation.append(Message(id: UUID().uuidString, text: "", isSentByUser: false))
             }
@@ -239,6 +240,7 @@ struct ChapterConversationView: View {
             do {
                 for try await result in openAI.chatsStream(query: query) {
                     if let chunk = result.choices.first?.delta.content {
+//                        print(chunk)
                         if let lastIndex {
                             lesson.chapters[chapterIndex].conversation[lastIndex].text += chunk
                         }
@@ -261,7 +263,8 @@ struct ChapterConversationView: View {
 
 struct LessonView_Previews: PreviewProvider {
     static var previews: some View {
-        let lesson = Lesson(id: UUID().uuidString, title: "Physics", lastUpdated: .now, chapters: [Chapter(id: UUID().uuidString, title: "Motion", conversation: [Message(id: "someID", text: "Hello!", isSentByUser: true)], memory: [[:]])])
-        ChapterConversationView(lessonsFirebase: LessonFirebaseModel(), lesson: .constant(lesson), chapterIndex: 0)
+        let lesson = Lesson(id: UUID().uuidString, depthLevel: 3, title: "Physics", lastUpdated: .now, chapters: [Chapter(id: UUID().uuidString, title: "Motion", conversation: [Message(id: "someID", text: "Hello!", isSentByUser: true)], memory: [[:]])])
+        ChapterConversationView(lesson: .constant(lesson), chapterIndex: 0)
+            .environmentObject(LessonFirebaseModel())
     }
 }

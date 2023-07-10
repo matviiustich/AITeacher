@@ -8,7 +8,9 @@
 import Foundation
 import Firebase
 import FirebaseFirestore
+import OpenAI
 
+@MainActor
 class LessonFirebaseModel: ObservableObject {
     let db = Firestore.firestore()
     private var listener: ListenerRegistration?
@@ -16,59 +18,97 @@ class LessonFirebaseModel: ObservableObject {
     @Published var lessons: [Lesson] = []
     @Published var preferences: UserPreferences?
     
-    init() {
-        initializeData()
-        startListening()
-    }
-    
-    private func initializeData() {
-        Task.init {
-            let retrievedLessons = await retrieveLessons()
-            let retrievedPreferences = await retrieveUserPreferences()
-            
-            DispatchQueue.main.async {
-                self.lessons = retrievedLessons
-                self.preferences = retrievedPreferences ?? UserPreferences(language: "English", learningStyle: "Sensing", communicationStyle: "Stochastic", toneStyle: "Debate", reasoningFramework: "Deductive")
-            }
-        }
-    }
-    
-    func createLesson(title: String, completion: @escaping (Lesson?) -> Void) {
+    func createLesson(title: String, depthLevel: Int) async throws {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             print("No authenticated user found")
-            completion(nil)
-            return
+            throw NetworkingError.tokenError(error: "No authenticated user found")
         }
         
         do {
             let lessonID = UUID().uuidString
             print(lessonID)
-            let lesson = Lesson(id: lessonID, title: title, lastUpdated: .now, chapters: [])
+            let lesson = Lesson(id: lessonID, depthLevel: depthLevel, title: title, lastUpdated: .now, chapters: [])
             let lessonData = try JSONEncoder().encode(lesson)
             let lessonDict = try JSONSerialization.jsonObject(with: lessonData, options: []) as? [String: Any]
             
             guard let dict = lessonDict else {
-                completion(nil)
-                return
+                throw NetworkingError.tokenError(error: "Failed to create a dictionary")
             }
             
             let usersCollection = db.collection("users").document(currentUserID)
-            usersCollection.collection("lessons").document(lessonID).setData(dict) { error in
-                if let error = error {
-                    print("Error storing lesson: \(error.localizedDescription)")
-                    completion(nil)
-                } else {
-                    print("Lesson stored successfully.")
-                    completion(lesson)
-                }
+            do {
+                try await usersCollection.collection("lessons").document(lessonID).setData(dict)
+                try await createChapters(lesson: lesson)
+            } catch {
             }
-            
         } catch {
             print("Error encoding lesson: \(error.localizedDescription)")
-            completion(nil)
         }
     }
     
+    func createChapters(lesson: Lesson) async throws {
+        let functions = [
+            ChatFunctionDeclaration(
+                name: "createChapter",
+                description: "Creates lessons based on the given topics",
+                parameters:
+                    JSONSchema(
+                        type: .object,
+                        properties: [
+                            "topics": .init(
+                                type: .array,
+                                description: "The lesson topics, e.g. Linear algebra", items: .init(type: .string)
+                            ),
+                            "unit": .init(type: .string, enumValues: ["celsius", "fahrenheit"])
+                        ],
+                        required: ["locations"]
+                    )
+            )
+        ]
+        
+        self.preferences = await retrieveUserPreferences()
+        
+        
+        let query = ChatQuery(
+            model: "gpt-3.5-turbo-0613",
+            messages: [Chat(role: .system, content: loadPrompt()), Chat(role: .system, content: "Create a plan for the \(lesson.title) lesson in \(self.preferences?.language ?? "English") language with a depth level of \(lesson.depthLevel), by listing the topics that need to be covered to learn the subject. CALL createChapter function for ALL topics listed")],
+            functions: functions
+        )
+        
+        do {
+            let result = try await openAI.chats(query: query)
+            if let function = result.choices[0].message.functionCall {
+                if function.name == "createChapter" && function.arguments != nil {
+                    let jsonString = function.arguments!
+
+                    guard let jsonData = jsonString.data(using: .utf8) else {
+                        fatalError("Failed to convert string to data.")
+                    }
+
+                    do {
+                        let decoder = JSONDecoder()
+                        let dictionary = try decoder.decode([String: [String]].self, from: jsonData)
+                        var updatedLesson = lesson
+                        if dictionary["topics"] != nil {
+                            for topic in dictionary["topics"]! {
+                                let config = "Depth level is Level_\(lesson.depthLevel). Learning style is \(self.preferences?.learningStyle ?? "auto"). Communication style is \(self.preferences?.communicationStyle ?? "auto"). Tone style is \(self.preferences?.toneStyle ?? "auto"). Reasoning framework is \(self.preferences?.reasoningFramework ?? "auto")"
+                                    updatedLesson.chapters.append(Chapter(id: UUID().uuidString, title: topic, conversation: [], memory: [["role" : "system", "content" : loadPrompt()], ["role" : "system", "content" : "This lesson is about \(topic)"], ["role" : "system", "content" : config]]))
+                                self.updateLesson(updatedLesson)
+//                                await createChapter(element)
+                            }
+                        }
+                        print(dictionary)
+                    } catch {
+                        fatalError("Failed to decode JSON: \(error)")
+                    }
+
+                }
+            }
+        } catch {
+            print("Error: \(error)")
+            throw NetworkingError.tokenError(error: error.localizedDescription)
+        }
+    }
     
     func retrieveLessons() async -> [Lesson] {
         guard let currentUserID = Auth.auth().currentUser?.uid else {

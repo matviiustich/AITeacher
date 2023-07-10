@@ -28,7 +28,6 @@ struct AITeacherApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
                 AuthenticatedView {
                     
                     VStack {
@@ -40,7 +39,6 @@ struct AITeacherApp: App {
                 } content: {
                     ContentView()
                 }
-            }
         }
     }
     

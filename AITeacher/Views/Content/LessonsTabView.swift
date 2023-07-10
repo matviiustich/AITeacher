@@ -10,7 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct LessonsTabView: View {
-    @ObservedObject var lessonsFirebase: LessonFirebaseModel
+    @EnvironmentObject var lessonsFirebase: LessonFirebaseModel
     @State private var showLessonTitleAlert: Bool = false
     @State private var lessonTitle: String = ""
     @State var createButtonPressed: Bool = false
@@ -19,7 +19,8 @@ struct LessonsTabView: View {
         List {
             ForEach(lessonsFirebase.lessons, id: \.self) { lesson in
                 NavigationLink(lesson.title) {
-                    ChaptersView(lessonsFirebase: lessonsFirebase, lesson: lesson)
+                    ChaptersView(lesson: lesson)
+                        .environmentObject(lessonsFirebase)
                 }
                 .contextMenu {
                     Button(role: .destructive) {
@@ -30,6 +31,12 @@ struct LessonsTabView: View {
                     }
                 }
             }
+        }
+        .onAppear {
+            Task {
+                lessonsFirebase.lessons = await lessonsFirebase.retrieveLessons()
+            }
+            lessonsFirebase.startListening()
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -44,7 +51,8 @@ struct LessonsTabView: View {
         .navigationTitle("Lessons")
         .navigationBarTitleDisplayMode(.inline)
         .popover(isPresented: $showLessonTitleAlert) {
-            CreateLessonView(lessonsFirebase: lessonsFirebase, buttonPressed: $createButtonPressed)
+            CreateLessonView(buttonPressed: $createButtonPressed)
+                .environmentObject(lessonsFirebase)
                 .interactiveDismissDisabled(createButtonPressed ? true : false)
         }
         
@@ -54,6 +62,7 @@ struct LessonsTabView: View {
 
 struct LessonsTabView_Previews: PreviewProvider {
     static var previews: some View {
-        LessonsTabView(lessonsFirebase: LessonFirebaseModel())
+        LessonsTabView()
+            .environmentObject(LessonFirebaseModel())
     }
 }

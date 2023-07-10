@@ -13,7 +13,7 @@ struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
     @State var presentingConfirmationDialog = false
     
-    @ObservedObject var lessonsFirebase: LessonFirebaseModel
+    @EnvironmentObject var lessonsFirebase: LessonFirebaseModel
     
     // Preference variables
     @State var selectedLanguage: String

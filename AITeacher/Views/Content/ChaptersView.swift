@@ -10,7 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 struct ChaptersView: View {
-    @ObservedObject var lessonsFirebase: LessonFirebaseModel
+    @EnvironmentObject var lessonsFirebase: LessonFirebaseModel
     @State var lesson: Lesson
     @State private var selectedChapter: Chapter? = nil
     @State var selectedDepthLevel = "1"
@@ -33,7 +33,8 @@ struct ChaptersView: View {
                     ForEach(lesson.chapters.indices, id: \.self) { index in
                         let chapter = lesson.chapters[index]
                         NavigationLink(chapter.title) {
-                            ChapterConversationView(lessonsFirebase: lessonsFirebase, lesson: $lesson, chapterIndex: index)
+                            ChapterConversationView(lesson: $lesson, chapterIndex: index)
+                                .environmentObject(lessonsFirebase)
                                 .onAppear {
                                     withAnimation { self.showTabBar = false }
                                 }
@@ -49,34 +50,19 @@ struct ChaptersView: View {
         .toolbar(showTabBar ? .visible : .hidden, for: .tabBar)
         .navigationTitle(lesson.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            Task {
-                lessonsFirebase.preferences = await lessonsFirebase.retrieveUserPreferences()
-            }
-            //            lessonsFirebase.startListening()
+        .onAppear {     
             withAnimation {
                 selectedChapter = nil
             }
         }
-        //        .onDisappear {
-        //            lessonsFirebase.stopListening()
-        //        }
-        
-    }
-    
-    func createChapter(topic: String) {
-        let config = "Depth level is Level_\(selectedDepthLevel). Learning style is \(lessonsFirebase.preferences?.learningStyle ?? "auto"). Communication style is \(lessonsFirebase.preferences?.communicationStyle ?? "auto"). Tone style is \(lessonsFirebase.preferences?.toneStyle ?? "auto"). Reasoning framework is \(lessonsFirebase.preferences?.reasoningFramework ?? "auto")"
-        withAnimation {
-            lesson.chapters.append(Chapter(id: UUID().uuidString, title: topic, conversation: [], memory: [["role" : "system", "content" : loadPrompt()], ["role" : "system", "content" : "This lesson is about \(topic)"], ["role" : "system", "content" : config]]))
-        }
-        lessonsFirebase.updateLesson(lesson)
     }
     
 }
 
 struct ChaptersView_Previews: PreviewProvider {
     static var previews: some View {
-        let lesson = Lesson(id: "lessonID", title: "Physics", lastUpdated: .now, chapters: [])
-        ChaptersView(lessonsFirebase: LessonFirebaseModel(), lesson: lesson)
+        let lesson = Lesson(id: "lessonID", depthLevel: 8, title: "Physics", lastUpdated: .now, chapters: [])
+        ChaptersView(lesson: lesson)
+            .environmentObject(LessonFirebaseModel())
     }
 }

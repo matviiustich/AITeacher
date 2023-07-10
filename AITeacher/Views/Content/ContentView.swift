@@ -9,7 +9,7 @@ import SwiftUI
 import Firebase
 import OpenAI
 
-let openAI = OpenAI(apiToken: "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")
+let openAI = OpenAI(apiToken: loadAPI())
 
 struct ContentView: View {
     @StateObject var lessonsFirebase = LessonFirebaseModel()
@@ -18,18 +18,25 @@ struct ContentView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                LessonsTabView(lessonsFirebase: lessonsFirebase)
+                LessonsTabView()
+                    .environmentObject(lessonsFirebase)
             }
             .tabItem {
                 Label("Lessons", systemImage: "book")
             }
-            UserProfileView(lessonsFirebase: lessonsFirebase, selectedLanguage: lessonsFirebase.preferences?.language ?? "English", selectedLearningStyle: lessonsFirebase.preferences?.learningStyle ?? "Sensing", selectedCommunicationStyle: lessonsFirebase.preferences?.communicationStyle ?? "Stochastic", selectedToneStyle: lessonsFirebase.preferences?.toneStyle ?? "Debate", selectedReasoningFramework: lessonsFirebase.preferences?.reasoningFramework ?? "Deductive")
+            UserProfileView(selectedLanguage: lessonsFirebase.preferences?.language ?? "English", selectedLearningStyle: lessonsFirebase.preferences?.learningStyle ?? "Sensing", selectedCommunicationStyle: lessonsFirebase.preferences?.communicationStyle ?? "Stochastic", selectedToneStyle: lessonsFirebase.preferences?.toneStyle ?? "Debate", selectedReasoningFramework: lessonsFirebase.preferences?.reasoningFramework ?? "Deductive")
+                .environmentObject(lessonsFirebase)
                 .environmentObject(viewModel)
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }
         }
-        
+        .onAppear {
+            Task {
+                
+                lessonsFirebase.preferences = await lessonsFirebase.retrieveUserPreferences()
+            }
+        }
     }
 }
 
